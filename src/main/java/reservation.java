@@ -1,7 +1,60 @@
-public class reservation {
+import java.util.HashMap;
+import java.util.Scanner;
 
-    public static void main(String[] args) {
-        System.out.println("Hello");
+public class reservation {
+    // status is the dictionary
+    private static HashMap<String,String> status = new HashMap<>();
+    private static HashMap<Integer,Integer> flights = new HashMap<>(20);
+
+    // To check whether a client can reserve a flight or not
+    public String reserve(String clientId, String[] flight){
+        // No client can reserve two flights
+        if(status!= null && status.containsKey(clientId))
+            return "You can't book more than one flights";
+
+        // for all flights that the client wants
+        for(String flightNo: flight){
+
+            // only allow flight booking if seats are available
+            // else change request to pending
+            if(flights.get(Integer.parseInt(flightNo))>=1) {
+                int seats = flights.get(Integer.parseInt(flightNo));
+                flights.replace(Integer.parseInt(flightNo),seats-1);
+                status.put(clientId, "pending");
+            }
+            else
+                return "Failed";
+        }
+        return "The status is pending";
+
+    }
+    public String getClient(){
+
+        //Take input as a single string and split it as users and flights they want to reserve
+        Scanner in = new Scanner(System.in);
+        System.out.println("Enter your id and flights you want");
+        String s = in.nextLine();
+        String input[] = s.split(" ");
+        String userId = input[0];
+        String flightNumbers[] = input[1].split(",");
+
+        return reserve(userId,flightNumbers);
+
+    }
+
+    public static void main( String[] args) {
+        flights = new HashMap<>(20);
+        for(int i=1;i<=20;i++)
+            flights.put(i,2);
+
+        status = new HashMap<>();
+
+        reservation ob = new reservation();
+        System.out.println(ob.getClient());
+        System.out.println(ob.getClient());
+        System.out.println(ob.getClient());
+        System.out.println(ob.getClient());
+
     }
 }
 
