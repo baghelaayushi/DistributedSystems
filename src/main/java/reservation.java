@@ -28,21 +28,18 @@ public class reservation {
         return "The status is pending";
 
     }
-    public String getClient(){
+    public String reserveSeat(String reservation){
 
-        //Take input as a single string and split it as users and flights they want to reserve
-        Scanner in = new Scanner(System.in);
-        System.out.println("Enter your id and flights you want");
-        String s = in.nextLine();
-        String input[] = s.split(" ");
-        String userId = input[0];
-        String flightNumbers[] = input[1].split(",");
+        String input[] = reservation.split(" ");
+        String clientName = input[1];
+        String flightNumbers[] = input[2].split(",");
 
-        return reserve(userId,flightNumbers);
+        return reserve(clientName,flightNumbers);
 
     }
 
     public static void main( String[] args) {
+
         flights = new HashMap<>(20);
         for(int i=1;i<=20;i++)
             flights.put(i,2);
@@ -50,10 +47,28 @@ public class reservation {
         status = new HashMap<>();
 
         reservation ob = new reservation();
-        System.out.println(ob.getClient());
-        System.out.println(ob.getClient());
-        System.out.println(ob.getClient());
-        System.out.println(ob.getClient());
+
+        Scanner in = new Scanner(System.in);
+
+        String userInput;
+
+        while (!(userInput = in.nextLine()).equals("exit")){
+
+            String input[] = userInput.split(" ");
+            String command = input[0];
+
+            switch (command) {
+                case "reserve":
+                    ob.reserveSeat(userInput);
+                    break;
+                case "cancel":
+                    break;
+
+                default:
+                    System.out.println("Enter a valid option");
+            }
+
+        }
 
     }
 }
