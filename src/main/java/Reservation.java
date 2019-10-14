@@ -1,12 +1,23 @@
+
+import com.google.gson.*;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
-public class reservation {
+public class Reservation {
     // status is the dictionary
     private static HashMap<String,ClientInfo> status = new HashMap<>();
     private static HashMap<Integer,Integer> flights = new HashMap<>(20);
+
     private static List<Event> Log = new ArrayList<>();
     private static int[][] Matrix;
     private static final int processId = 1;
+    private static int number_of_hosts = -1;
+    private static HashMap<String, Site> siteHashMap = new HashMap<>();
+    private static Site mySite = null;
 
     // To check whether a client can reserve a flight or not
     public String reserve(String reservation){
@@ -74,25 +85,69 @@ public class reservation {
     }
 
 
-    public static void main( String[] args) {
+    public static void bootstrapProject() throws FileNotFoundException {
 
-        flights = new HashMap<>(20);
+        initialize();
+
+        processHosts();
+
+    }
+
+    private static void processHosts() throws FileNotFoundException {
+
+        BufferedReader hosts = new BufferedReader(new FileReader("./src/bin/knownhosts.json"));
+
+        Gson gson =new Gson();
+        JsonParser parser = new JsonParser();
+        JsonObject hostsObject = parser.parse(hosts).getAsJsonObject().get("hosts").getAsJsonObject();
+
+        number_of_hosts = hostsObject.keySet().size();
+
+        for (Map.Entry<String, JsonElement> host : hostsObject.entrySet()){
+            JsonObject siteInfo = host.getValue().getAsJsonObject();
+            Site site = new Site(siteInfo.get("ip_address").getAsString(),
+                    siteInfo.get("udp_start_port").getAsString(),
+                    siteInfo.get("udp_end_port").getAsString());
+            siteHashMap.put(host.getKey(), site);
+
+            //TODO : Update this with environment variables
+            if(host.getKey().equalsIgnoreCase("ALPHA")){
+                mySite = site;
+            }
+        }
+    }
+
+    private static void initialize() {
         for(int i=1;i<=20;i++)
             flights.put(i,2);
 
-        status = new HashMap<>();
-
-        reservation ob = new reservation();
-
-        Scanner in = new Scanner(System.in);
-
         String userInput;
-        int n =3;
 
         // initializing matrix and log for a site
-        Matrix  = new int[3][3];
+        Matrix  = new int[number_of_hosts][number_of_hosts];
         Log = new ArrayList<>();
+    }
 
+
+    public static void main( String[] args) {
+
+        try {
+            bootstrapProject();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        acceptUserInput();
+
+    }
+
+    private static void acceptUserInput() {
+
+        Reservation ob = new Reservation();
+
+        Scanner in = new Scanner(System.in);
+        String userInput;
         while (!(userInput = in.nextLine()).equals("exit")){
 
             String input[] = userInput.split(" ");
@@ -114,32 +169,8 @@ public class reservation {
             }
 
         }
-
     }
 }
 
-class ClientInfo{
-
-    String clientName;
-    String status;
-    List<Integer> flightNumbers = new ArrayList<>();
-
-
-    public ClientInfo(String clientName, String[] flightNumbers, String status){
-        this.clientName = clientName;
-        this.status = status;
-        for (String flight :  flightNumbers){
-            this.flightNumbers.add(Integer.parseInt(flight));
-        }
-
-
-    }
-
-    public List<Integer> getFlights(){
-        return flightNumbers;
-    }
-
-
-}
 
 

@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Wuu-Bernstein.iml" filepath="$PROJECT_DIR$/Wuu-Bernstein.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dsa.iml" filepath="$PROJECT_DIR$/.idea/modules/dsa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dsa_main.iml" filepath="$PROJECT_DIR$/.idea/modules/dsa_main.iml" group="dsa" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dsa_test.iml" filepath="$PROJECT_DIR$/.idea/modules/dsa_test.iml" group="dsa" />
     </modules>
   </component>
 </project>
