@@ -23,8 +23,9 @@ public class Server {
 
     public static void bootstrapProject() throws FileNotFoundException {
 
-        initialize();
         processHosts();
+        initialize();
+
     }
 
     private static void initialize(){
