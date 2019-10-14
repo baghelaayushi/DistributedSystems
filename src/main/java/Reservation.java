@@ -87,6 +87,14 @@ public class Reservation {
 
         return "Reservation for "+ clientName + " cancelled.";
     }
+
+    public void viewLog(){
+
+        for (Map.Entry<String, ClientInfo> report : status.entrySet()){
+            ClientInfo info = report.getValue();
+            System.out.println(report.getKey()+ " "+ info.getFlights() + " " + info.getStatus());
+        }
+    }
 }
 
 

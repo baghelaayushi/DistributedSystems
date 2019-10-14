@@ -24,5 +24,8 @@ public class ClientInfo{
         return flightNumbers;
     }
 
+    public String getStatus(){ return  status; }
+
+
 
 }

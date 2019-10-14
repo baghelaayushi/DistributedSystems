@@ -23,8 +23,9 @@ public class Server {
 
     public static void bootstrapProject() throws FileNotFoundException {
 
-        initialize();
         processHosts();
+        initialize();
+
     }
 
     private static void initialize(){
@@ -93,7 +94,9 @@ public class Server {
                     response = ob.cancel(userInput);
                     System.out.println(response);
                     break;
-
+                case "view":
+                    ob.viewLog();
+                    break;
                 default:
                     System.out.println("Enter a valid option");
             }
