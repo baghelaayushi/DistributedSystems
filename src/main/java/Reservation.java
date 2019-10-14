@@ -97,6 +97,21 @@ public class Reservation {
             System.out.println(row);
         }
     }
+
+    public void viewLog(){
+
+        for (Event event : Log){
+
+            String row = event.getOperationType() + " " +
+                    event.getOperation().getClientName()  + " " +
+                    event.getOperation().getFlights();
+            row = row.replaceAll("\\[", "").replaceAll("\\]","");
+            System.out.println(row);
+
+        }
+    }
+
+
 }
 
 
