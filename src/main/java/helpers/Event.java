@@ -1,3 +1,7 @@
+package helpers;
+
+import helpers.ClientInfo;
+
 import java.sql.Timestamp;
 
 public class Event {
