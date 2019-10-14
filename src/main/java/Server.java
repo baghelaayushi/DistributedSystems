@@ -17,8 +17,8 @@ public class Server {
     private static HashMap<String, Site> siteHashMap = new HashMap<>();
     private static Site mySite = null;
 
-    private static List<Event> Log = new ArrayList<>();
-    private static int[][] Matrix;
+    private static List<Event> log = new ArrayList<>();
+    private static int[][] matrixClock;
 
 
     public static void bootstrapProject() throws FileNotFoundException {
@@ -29,8 +29,8 @@ public class Server {
 
     private static void initialize(){
         // initializing matrix and log for a site
-        Matrix  = new int[number_of_hosts][number_of_hosts];
-        Log = new ArrayList<>();
+        matrixClock  = new int[number_of_hosts][number_of_hosts];
+        log = new ArrayList<>();
     }
 
     private static void processHosts() throws FileNotFoundException {
@@ -74,7 +74,7 @@ public class Server {
 
     private static void acceptUserInput() {
 
-        Reservation ob = new Reservation(number_of_hosts, Matrix, Log);
+        Reservation ob = new Reservation(matrixClock, log);
 
         Scanner in = new Scanner(System.in);
         String userInput;

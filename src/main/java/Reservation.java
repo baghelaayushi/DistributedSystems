@@ -9,12 +9,12 @@ public class Reservation {
     private static HashMap<String, ClientInfo> status = new HashMap<>();
     private static HashMap<Integer,Integer> flights = new HashMap<>(20);
 
-    private  List<Event> Log = new ArrayList<>();
+    private  List<Event> Log;
     private  int[][] Matrix;
     private static final int processId = 1;
 
 
-    public Reservation(int number_of_hosts,int[][] Matrix,List<Event> Log){
+    public Reservation(int[][] Matrix,List<Event> Log){
         for(int i=1;i<=20;i++)
             flights.put(i,2);
 
