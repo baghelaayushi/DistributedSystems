@@ -88,7 +88,7 @@ public class Reservation {
         return "Reservation for "+ clientName + " cancelled.";
     }
 
-    public void viewLog(){
+    public void viewDictionary(){
 
         for (Map.Entry<String, ClientInfo> report : status.entrySet()){
             ClientInfo info = report.getValue();

@@ -95,7 +95,7 @@ public class Server {
                     System.out.println(response);
                     break;
                 case "view":
-                    ob.viewLog();
+                    ob.viewDictionary();
                     break;
                 default:
                     System.out.println("Enter a valid option");
