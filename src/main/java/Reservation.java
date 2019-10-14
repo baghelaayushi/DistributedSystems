@@ -1,23 +1,27 @@
 
-import com.google.gson.*;
+import helpers.ClientInfo;
+import helpers.Event;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.*;
 
 public class Reservation {
     // status is the dictionary
-    private static HashMap<String,ClientInfo> status = new HashMap<>();
+    private static HashMap<String, ClientInfo> status = new HashMap<>();
     private static HashMap<Integer,Integer> flights = new HashMap<>(20);
 
-    private static List<Event> Log = new ArrayList<>();
-    private static int[][] Matrix;
+    private  List<Event> Log;
+    private  int[][] Matrix;
     private static final int processId = 1;
-    private static int number_of_hosts = -1;
-    private static HashMap<String, Site> siteHashMap = new HashMap<>();
-    private static Site mySite = null;
+
+
+    public Reservation(int[][] Matrix,List<Event> Log){
+        for(int i=1;i<=20;i++)
+            flights.put(i,2);
+
+        // initializing matrix and log for a site
+        this.Matrix  = Matrix;
+        this.Log = Log;
+    }
 
     // To check whether a client can reserve a flight or not
     public String reserve(String reservation){
@@ -45,12 +49,12 @@ public class Reservation {
         }
 
         // adding events to matrix clock
+        this.Matrix[processId][processId]++;
 
-        Matrix[processId][processId]++;
         status.put(clientName, new ClientInfo(clientName, flightNumbers, "pending"));
 
         // adding local insert event
-        Log.add(new Event("insert",status.get(clientName),processId));
+        this.Log.add(new Event("insert",status.get(clientName),processId));
         return "The status is pending";
 
     }
@@ -63,7 +67,7 @@ public class Reservation {
         if(status.containsKey(clientName)){
 
             //adding event to matrix clock
-            Matrix[processId][processId]++;
+            this.Matrix[processId][processId]++;
             List<Integer> flightsToCancel = status.get(clientName).getFlights();
 
             for (int i = 0; i < flightsToCancel.size(); i++){
@@ -73,7 +77,7 @@ public class Reservation {
             }
 
             //adding local delete event
-            Log.add(new Event("delete",status.get(clientName),processId));
+            this.Log.add(new Event("delete",status.get(clientName),processId));
 
             status.remove(clientName);
 
@@ -81,94 +85,7 @@ public class Reservation {
             return "Cannot schedule reservation for "+ clientName;
         }
 
-        return "Reservation for "+ clientName + "cancelled.";
-    }
-
-
-    public static void bootstrapProject() throws FileNotFoundException {
-
-        initialize();
-
-        processHosts();
-
-    }
-
-    private static void processHosts() throws FileNotFoundException {
-
-        BufferedReader hosts = new BufferedReader(new FileReader("./src/bin/knownhosts.json"));
-
-        Gson gson =new Gson();
-        JsonParser parser = new JsonParser();
-        JsonObject hostsObject = parser.parse(hosts).getAsJsonObject().get("hosts").getAsJsonObject();
-
-        number_of_hosts = hostsObject.keySet().size();
-
-        for (Map.Entry<String, JsonElement> host : hostsObject.entrySet()){
-            JsonObject siteInfo = host.getValue().getAsJsonObject();
-            Site site = new Site(siteInfo.get("ip_address").getAsString(),
-                    siteInfo.get("udp_start_port").getAsString(),
-                    siteInfo.get("udp_end_port").getAsString());
-            siteHashMap.put(host.getKey(), site);
-
-            //TODO : Update this with environment variables
-            if(host.getKey().equalsIgnoreCase("ALPHA")){
-                mySite = site;
-            }
-        }
-    }
-
-    private static void initialize() {
-        for(int i=1;i<=20;i++)
-            flights.put(i,2);
-
-        String userInput;
-
-        // initializing matrix and log for a site
-        Matrix  = new int[number_of_hosts][number_of_hosts];
-        Log = new ArrayList<>();
-    }
-
-
-    public static void main( String[] args) {
-
-        try {
-            bootstrapProject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-
-        acceptUserInput();
-
-    }
-
-    private static void acceptUserInput() {
-
-        Reservation ob = new Reservation();
-
-        Scanner in = new Scanner(System.in);
-        String userInput;
-        while (!(userInput = in.nextLine()).equals("exit")){
-
-            String input[] = userInput.split(" ");
-            String command = input[0];
-            String response;
-
-            switch (command) {
-                case "reserve":
-                    response = ob.reserve(userInput);
-                    System.out.println(response);
-                    break;
-                case "cancel":
-                    response = ob.cancel(userInput);
-                    System.out.println(response);
-                    break;
-
-                default:
-                    System.out.println("Enter a valid option");
-            }
-
-        }
+        return "Reservation for "+ clientName + " cancelled.";
     }
 }
 

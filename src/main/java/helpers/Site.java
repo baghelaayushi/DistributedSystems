@@ -1,3 +1,5 @@
+package helpers;
+
 public class Site {
     private String ipAddress;
     private String uDPStartAddress;

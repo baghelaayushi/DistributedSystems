@@ -1,7 +1,9 @@
+package helpers;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class ClientInfo{
+public class ClientInfo{
 
     String clientName;
     String status;
