@@ -12,6 +12,9 @@
 
 .gradle/**
 .gradle/
+.idea/modules/**
+.idea/**/compiler.xml
+.idea/modules.xml
 
 # Generated files
 .idea/**/contentModel.xml
