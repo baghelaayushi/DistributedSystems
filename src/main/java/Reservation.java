@@ -14,6 +14,9 @@ public class Reservation {
     private static int number_of_hosts = -1;
     private static HashMap<String, Site> siteHashMap = new HashMap<>();
     private static Site mySite = null;
+    private static List<Event> Log = new ArrayList<>();
+    private static int[][] Matrix;
+    private static final int processId = 1;
 
     // To check whether a client can reserve a flight or not
     public String reserve(String reservation){
@@ -25,7 +28,7 @@ public class Reservation {
 
         // No client can reserve two flights
         if(status!= null && status.containsKey(clientName))
-            return "You can't book more than one flights";
+            return "You can't book more than one flight";
 
         // for all flights that the client wants
         for(String flightNo: flightNumbers){
@@ -40,8 +43,13 @@ public class Reservation {
                 return "Failed";
         }
 
+        // adding events to matrix clock
 
+        Matrix[processId][processId]++;
         status.put(clientName, new ClientInfo(clientName, flightNumbers, "pending"));
+
+        // adding local insert event
+        Log.add(new Event("insert",status.get(clientName),processId));
         return "The status is pending";
 
     }
@@ -53,7 +61,8 @@ public class Reservation {
 
         if(status.containsKey(clientName)){
 
-
+            //adding event to matrix clock
+            Matrix[processId][processId]++;
             List<Integer> flightsToCancel = status.get(clientName).getFlights();
 
             for (int i = 0; i < flightsToCancel.size(); i++){
@@ -61,6 +70,9 @@ public class Reservation {
                 currentSeats++;
                 flights.put(flightsToCancel.get(i), currentSeats);
             }
+
+            //adding local delete event
+            Log.add(new Event("delete",status.get(clientName),processId));
 
             status.remove(clientName);
 
@@ -107,6 +119,11 @@ public class Reservation {
     private static void initialize() {
         for(int i=1;i<=20;i++)
             flights.put(i,2);
+
+
+        // initializing matrix and log for a site
+        Matrix  = new int[number_of_hosts][number_of_hosts];
+        Log = new ArrayList<>();
     }
 
 
@@ -125,9 +142,10 @@ public class Reservation {
     private static void acceptUserInput() {
 
         Reservation ob = new Reservation();
+        String userInput;
 
         Scanner in = new Scanner(System.in);
-        String userInput;
+
         while (!(userInput = in.nextLine()).equals("exit")){
 
             String input[] = userInput.split(" ");
@@ -151,5 +169,6 @@ public class Reservation {
         }
     }
 }
+
 
 
