@@ -94,7 +94,15 @@ public class Server {
                     response = ob.cancel(userInput);
                     System.out.println(response);
                     break;
-
+                case "view":
+                    ob.viewDictionary();
+                    break;
+                case "log":
+                    ob.viewLog();
+                    break;
+                case "clock":
+                    ob.viewClock();
+                    break;
                 default:
                     System.out.println("Enter a valid option");
             }
