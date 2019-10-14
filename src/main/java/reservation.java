@@ -4,6 +4,9 @@ public class reservation {
     // status is the dictionary
     private static HashMap<String,ClientInfo> status = new HashMap<>();
     private static HashMap<Integer,Integer> flights = new HashMap<>(20);
+    private static List<Event> Log = new ArrayList<>();
+    private static int[][] Matrix;
+    private static final int processId = 1;
 
     // To check whether a client can reserve a flight or not
     public String reserve(String reservation){
@@ -15,7 +18,7 @@ public class reservation {
 
         // No client can reserve two flights
         if(status!= null && status.containsKey(clientName))
-            return "You can't book more than one flights";
+            return "You can't book more than one flight";
 
         // for all flights that the client wants
         for(String flightNo: flightNumbers){
@@ -30,8 +33,13 @@ public class reservation {
                 return "Failed";
         }
 
+        // adding events to matrix clock
 
+        Matrix[processId][processId]++;
         status.put(clientName, new ClientInfo(clientName, flightNumbers, "pending"));
+
+        // adding local insert event
+        Log.add(new Event("insert",status.get(clientName),processId));
         return "The status is pending";
 
     }
@@ -43,7 +51,8 @@ public class reservation {
 
         if(status.containsKey(clientName)){
 
-
+            //adding event to matrix clock
+            Matrix[processId][processId]++;
             List<Integer> flightsToCancel = status.get(clientName).getFlights();
 
             for (int i = 0; i < flightsToCancel.size(); i++){
@@ -51,6 +60,9 @@ public class reservation {
                 currentSeats++;
                 flights.put(flightsToCancel.get(i), currentSeats);
             }
+
+            //adding local delete event
+            Log.add(new Event("delete",status.get(clientName),processId));
 
             status.remove(clientName);
 
@@ -75,6 +87,11 @@ public class reservation {
         Scanner in = new Scanner(System.in);
 
         String userInput;
+        int n =3;
+
+        // initializing matrix and log for a site
+        Matrix  = new int[3][3];
+        Log = new ArrayList<>();
 
         while (!(userInput = in.nextLine()).equals("exit")){
 
@@ -124,4 +141,5 @@ class ClientInfo{
 
 
 }
+
 
