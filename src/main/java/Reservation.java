@@ -111,6 +111,16 @@ public class Reservation {
         }
     }
 
+    public void viewClock(){
+
+        for (int i = 0; i < Matrix.length; i++){
+            for (int j = 0; j < Matrix[0].length; j++){
+                System.out.print(Matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
 
 }
 

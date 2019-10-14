@@ -100,6 +100,9 @@ public class Server {
                 case "log":
                     ob.viewLog();
                     break;
+                case "clock":
+                    ob.viewClock();
+                    break;
                 default:
                     System.out.println("Enter a valid option");
             }
