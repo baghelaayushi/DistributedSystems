@@ -2,14 +2,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import helpers.Event;
 import helpers.Site;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Server {
 
@@ -18,8 +17,20 @@ public class Server {
     private static HashMap<String, Site> siteHashMap = new HashMap<>();
     private static Site mySite = null;
 
+    private static List<Event> Log = new ArrayList<>();
+    private static int[][] Matrix;
+
+
     public static void bootstrapProject() throws FileNotFoundException {
+
+        initialize();
         processHosts();
+    }
+
+    private static void initialize(){
+        // initializing matrix and log for a site
+        Matrix  = new int[number_of_hosts][number_of_hosts];
+        Log = new ArrayList<>();
     }
 
     private static void processHosts() throws FileNotFoundException {
@@ -63,7 +74,7 @@ public class Server {
 
     private static void acceptUserInput() {
 
-        Reservation ob = new Reservation(number_of_hosts);
+        Reservation ob = new Reservation(number_of_hosts, Matrix, Log);
 
         Scanner in = new Scanner(System.in);
         String userInput;

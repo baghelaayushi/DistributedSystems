@@ -9,20 +9,18 @@ public class Reservation {
     private static HashMap<String, ClientInfo> status = new HashMap<>();
     private static HashMap<Integer,Integer> flights = new HashMap<>(20);
 
-    private static List<Event> Log = new ArrayList<>();
-    private static int[][] Matrix;
+    private  List<Event> Log = new ArrayList<>();
+    private  int[][] Matrix;
     private static final int processId = 1;
 
 
-    public Reservation(int number_of_hosts){
+    public Reservation(int number_of_hosts,int[][] Matrix,List<Event> Log){
         for(int i=1;i<=20;i++)
             flights.put(i,2);
 
-        String userInput;
-
         // initializing matrix and log for a site
-        Matrix  = new int[number_of_hosts][number_of_hosts];
-        Log = new ArrayList<>();
+        this.Matrix  = Matrix;
+        this.Log = Log;
     }
 
     // To check whether a client can reserve a flight or not
@@ -51,12 +49,12 @@ public class Reservation {
         }
 
         // adding events to matrix clock
+        this.Matrix[processId][processId]++;
 
-        Matrix[processId][processId]++;
         status.put(clientName, new ClientInfo(clientName, flightNumbers, "pending"));
 
         // adding local insert event
-        Log.add(new Event("insert",status.get(clientName),processId));
+        this.Log.add(new Event("insert",status.get(clientName),processId));
         return "The status is pending";
 
     }
@@ -69,7 +67,7 @@ public class Reservation {
         if(status.containsKey(clientName)){
 
             //adding event to matrix clock
-            Matrix[processId][processId]++;
+            this.Matrix[processId][processId]++;
             List<Integer> flightsToCancel = status.get(clientName).getFlights();
 
             for (int i = 0; i < flightsToCancel.size(); i++){
@@ -79,7 +77,7 @@ public class Reservation {
             }
 
             //adding local delete event
-            Log.add(new Event("delete",status.get(clientName),processId));
+            this.Log.add(new Event("delete",status.get(clientName),processId));
 
             status.remove(clientName);
 
