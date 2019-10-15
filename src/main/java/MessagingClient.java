@@ -1,7 +1,14 @@
+import helpers.Message;
+import helpers.Site;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class MessagingClient {
@@ -10,22 +17,34 @@ public class MessagingClient {
     private InetAddress serverAddress;
     private int port;
     private Scanner scanner;
+    private HashMap<String, Site> siteHashMap = new HashMap<>();
 
-    private MessagingClient(String destinationAddr, int port) throws IOException {
+    public MessagingClient(String destinationAddr, int port) throws IOException {
         this.serverAddress = InetAddress.getByName(destinationAddr);
         this.port = port;
         udpSocket = new DatagramSocket(this.port);
         scanner = new Scanner(System.in);
     }
 
-    public int start() throws IOException{
+    public void send(Message message) throws IOException{
 
-        while (true){
-            String bs = "hello";
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutput out = null;
+            byte[] yourBytes;
+            try {
+                out = new ObjectOutputStream(bos);
+                out.writeObject(message);
+                out.flush();
+                yourBytes = bos.toByteArray();
+                DatagramPacket p = new DatagramPacket(yourBytes, yourBytes.length, serverAddress, port);
+                this.udpSocket.send(p);
+            } finally {
+                try {
+                    bos.close();
+                } catch (IOException ex) {
+                    // ignore close exception
+                }
+            }
 
-            DatagramPacket p = new DatagramPacket(bs.getBytes(), bs.getBytes().length, serverAddress, port);
-
-            this.udpSocket.send(p);
-        }
     }
 }
