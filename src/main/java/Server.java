@@ -24,15 +24,22 @@ public class Server {
 
     public static void bootstrapProject(String selfIdentifier) throws FileNotFoundException {
 
-        processHosts(selfIdentifier);
-        initialize();
+        try {
+            processHosts(selfIdentifier);
+            initialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
-    private static void initialize(){
+    private static void initialize() throws Exception{
         // initializing matrix and log for a site
         matrixClock  = new int[number_of_hosts][number_of_hosts];
         log = new ArrayList<>();
+
+        MessagingServer client = new MessagingServer(mySite.getRandomPort());
+        client.listen();
     }
 
     private static void processHosts(String self) throws FileNotFoundException {
