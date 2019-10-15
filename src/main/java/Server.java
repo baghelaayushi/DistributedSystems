@@ -3,11 +3,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import helpers.Event;
+import helpers.Message;
 import helpers.Site;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -24,20 +26,39 @@ public class Server {
 
     public static void bootstrapProject(String selfIdentifier) throws FileNotFoundException {
 
-        processHosts(selfIdentifier);
-        initialize();
+        try {
+            processHosts(selfIdentifier);
+            initialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
-    private static void initialize(){
+    private static void initialize() throws Exception{
         // initializing matrix and log for a site
         matrixClock  = new int[number_of_hosts][number_of_hosts];
         log = new ArrayList<>();
+
+        MessagingServer client = new MessagingServer(mySite.getRandomPort());
+
+        Runnable R =  new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    client.listen();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Thread t = new Thread(R);
+        t.start();
     }
 
     private static void processHosts(String self) throws FileNotFoundException {
 
-        BufferedReader hosts = new BufferedReader(new FileReader("src/bin/knownhosts.json"));
+        BufferedReader hosts = new BufferedReader(new FileReader("./bin/knownhosts.json"));
 
         Gson gson =new Gson();
         JsonParser parser = new JsonParser();
@@ -70,8 +91,6 @@ public class Server {
             System.out.println("Select the current site");
             System.exit(0);
         }
-
-
 
         try {
             bootstrapProject(self);
@@ -117,10 +136,25 @@ public class Server {
                 case "clock":
                     ob.viewClock();
                     break;
+                case "send":
+                    sendMessage(userInput);
                 default:
                     System.out.println("Enter a valid option");
             }
 
+        }
+    }
+
+    public static void sendMessage(String userInput){
+        try {
+            String input[] = userInput.split(" ");
+            String clientName = input[1];
+            String destinationAddress = siteHashMap.get(clientName).getIpAddress();
+            int port = siteHashMap.get(clientName).getRandomPort();
+            System.out.println(destinationAddress +" " + port);
+            new MessagingClient(destinationAddress, port).send(new Message(log, matrixClock));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
