@@ -8,6 +8,8 @@ import java.util.List;
 
 public class ClientInfo{
 
+
+
     String clientName;
     String status;
     List<Integer> flightNumbers = new ArrayList<>();
@@ -27,5 +29,10 @@ public class ClientInfo{
         return flightNumbers;
     }
 
+    public String getStatus(){ return  status; }
+
+    public String getClientName() {
+        return clientName;
+    }
 
 }

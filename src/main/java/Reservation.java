@@ -130,6 +130,40 @@ public class Reservation {
         }
 
     }
+
+    public void viewDictionary(){
+
+        for (Map.Entry<String, ClientInfo> report : status.entrySet()){
+            ClientInfo info = report.getValue();
+            String row = report.getKey()+ " "+ info.getFlights() + " " + info.getStatus();
+            row = row.replaceAll("\\[", "").replaceAll("\\]","");
+            System.out.println(row);
+        }
+    }
+
+    public void viewLog(){
+
+        for (Event event : Log){
+
+            String row = event.getOperationType() + " " +
+                    event.getOperation().getClientName()  + " " +
+                    event.getOperation().getFlights();
+            row = row.replaceAll("\\[", "").replaceAll("\\]","");
+            System.out.println(row);
+
+        }
+    }
+
+    public void viewClock(){
+
+        for (int i = 0; i < Matrix.length; i++){
+            for (int j = 0; j < Matrix[0].length; j++){
+                System.out.print(Matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
 }
 
 

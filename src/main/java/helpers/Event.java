@@ -22,5 +22,16 @@ public class Event {
         return this.operationType;
     }
 
+    public ClientInfo getOperation() {
+        return this.operation;
+    }
+
+    public Timestamp getTime() {
+        return this.time;
+    }
+
+    public int getNodeId() {
+        return this.NodeId;
+    }
 
 }

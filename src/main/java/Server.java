@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
+
 public class Server {
 
 
@@ -21,9 +22,9 @@ public class Server {
     private static int[][] matrixClock;
 
 
-    public static void bootstrapProject() throws FileNotFoundException {
+    public static void bootstrapProject(String selfIdentifier) throws FileNotFoundException {
 
-        processHosts();
+        processHosts(selfIdentifier);
         initialize();
 
     }
@@ -34,9 +35,9 @@ public class Server {
         log = new ArrayList<>();
     }
 
-    private static void processHosts() throws FileNotFoundException {
+    private static void processHosts(String self) throws FileNotFoundException {
 
-        BufferedReader hosts = new BufferedReader(new FileReader("./src/bin/knownhosts.json"));
+        BufferedReader hosts = new BufferedReader(new FileReader("src/bin/knownhosts.json"));
 
         Gson gson =new Gson();
         JsonParser parser = new JsonParser();
@@ -52,18 +53,28 @@ public class Server {
             siteHashMap.put(host.getKey(), site);
 
             //TODO : Update this with environment variables
-            if(host.getKey().equalsIgnoreCase("ALPHA")){
+            if(host.getKey().equalsIgnoreCase(self)){
                 mySite = site;
             }
         }
+
     }
 
 
 
     public static void main( String[] args) {
 
+        boolean devMode = true;
+        String self = args.length == 0 ? "alpha" : args[0];
+        if(args.length < 0 && !devMode){
+            System.out.println("Select the current site");
+            System.exit(0);
+        }
+
+
+
         try {
-            bootstrapProject();
+            bootstrapProject(self);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -95,8 +106,17 @@ public class Server {
                     System.out.println(response);
                     break;
                 case "recover":
+                    ob.getState();
                     break;
-
+                case "view":
+                    ob.viewDictionary();
+                    break;
+                case "log":
+                    ob.viewLog();
+                    break;
+                case "clock":
+                    ob.viewClock();
+                    break;
                 default:
                     System.out.println("Enter a valid option");
             }
