@@ -5,6 +5,7 @@ import helpers.ClientInfo;
 import java.sql.Timestamp;
 
 public class Event {
+
     private String operationType;
     private ClientInfo operation;
     private Timestamp time;
@@ -16,4 +17,10 @@ public class Event {
         this.NodeId = NodeId;
         this.time = new Timestamp(System.currentTimeMillis());
     }
+
+    public String getOperationType(){
+        return this.operationType;
+    }
+
+
 }

@@ -94,6 +94,8 @@ public class Server {
                     response = ob.cancel(userInput);
                     System.out.println(response);
                     break;
+                case "recover":
+                    break;
 
                 default:
                     System.out.println("Enter a valid option");
