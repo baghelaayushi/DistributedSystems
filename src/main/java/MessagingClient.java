@@ -1,3 +1,5 @@
+import helpers.Message;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -11,21 +13,22 @@ public class MessagingClient {
     private int port;
     private Scanner scanner;
 
-    private MessagingClient(String destinationAddr, int port) throws IOException {
+    public MessagingClient(String destinationAddr, int port) throws IOException {
         this.serverAddress = InetAddress.getByName(destinationAddr);
         this.port = port;
         udpSocket = new DatagramSocket(this.port);
         scanner = new Scanner(System.in);
     }
 
-    public int start() throws IOException{
+    public void send(Message toBeSent) throws IOException{
 
-        while (true){
+
             String bs = "hello";
+            System.out.println("I WILL BE SENDING A MESSAGE" + this.serverAddress +" "+  this.port);
 
-            DatagramPacket p = new DatagramPacket(bs.getBytes(), bs.getBytes().length, serverAddress, port);
+            DatagramPacket p = new DatagramPacket(toBeSent.toString().getBytes(), toBeSent.toString().getBytes().length, serverAddress, port);
 
             this.udpSocket.send(p);
-        }
+
     }
 }

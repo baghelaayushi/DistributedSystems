@@ -16,6 +16,7 @@ public class Site {
     }
 
     public int getRandomPort(){
-        return (int) (Math.random() * (uDPEndAddress - uDPStartAddress)) + uDPStartAddress;
+        return uDPStartAddress;
+//        return (int) (Math.random() * (uDPEndAddress - uDPStartAddress)) + uDPStartAddress;
     }
 }

@@ -20,6 +20,7 @@ public class MessagingServer {
 
         while(true){
             byte[] buf = new byte[256];
+            System.out.println("HERE");
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             udpSocket.receive(packet);
             msg = new String(packet.getData()).trim();
