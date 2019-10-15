@@ -18,20 +18,20 @@ public class Event {
         this.time = new Timestamp(System.currentTimeMillis());
     }
 
-    public String getOperationType() {
-        return operationType;
+    public String getOperationType(){
+        return this.operationType;
     }
 
     public ClientInfo getOperation() {
-        return operation;
+        return this.operation;
     }
 
     public Timestamp getTime() {
-        return time;
+        return this.time;
     }
 
     public int getNodeId() {
-        return NodeId;
+        return this.NodeId;
     }
 
 }

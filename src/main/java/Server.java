@@ -105,6 +105,9 @@ public class Server {
                     response = ob.cancel(userInput);
                     System.out.println(response);
                     break;
+                case "recover":
+                    ob.getState();
+                    break;
                 case "view":
                     ob.viewDictionary();
                     break;

@@ -1,6 +1,10 @@
 
+import com.google.gson.*;
 import helpers.ClientInfo;
 import helpers.Event;
+
+import java.io.*;
+
 
 import java.util.*;
 
@@ -55,6 +59,7 @@ public class Reservation {
 
         // adding local insert event
         this.Log.add(new Event("insert",status.get(clientName),processId));
+        saveState();
         return "The status is pending";
 
     }
@@ -84,8 +89,46 @@ public class Reservation {
         }else{
             return "Cannot schedule reservation for "+ clientName;
         }
+        saveState();
 
         return "Reservation for "+ clientName + " cancelled.";
+    }
+    public void saveState(){
+        try(FileWriter fw = new FileWriter("persistent_log.json")){
+            Gson gson = new Gson();
+            JsonArray arr = new JsonArray();
+            for(Event e: Log){
+                String client_ob = gson.toJson(e);
+                arr.add(client_ob);
+            }
+            fw.append(gson.toJson(arr));
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getState(){
+        System.out.println("updating the log....");
+        try {
+            //convert the json string back to object
+            BufferedReader backup = new BufferedReader(new FileReader("persistent_log.json"));
+            JsonParser parser = new JsonParser();
+            JsonArray parsed = parser.parse(backup).getAsJsonArray();
+            Log = new ArrayList<>();
+
+            Gson gson = new Gson();
+            for(JsonElement ob: parsed){
+                Event event = gson.fromJson(ob.getAsString(),Event.class);
+                // adding the events to log
+                Log.add(event);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void viewDictionary(){
@@ -120,7 +163,6 @@ public class Reservation {
             System.out.println();
         }
     }
-
 
 }
 
