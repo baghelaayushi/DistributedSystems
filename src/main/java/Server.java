@@ -161,7 +161,7 @@ public class Server {
                     break;
 
                 default:
-                    System.out.println("Enter a valid option");
+//                    System.out.println("Enter a valid option");
             }
 
         }

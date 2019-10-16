@@ -64,7 +64,7 @@ public class Reservation {
         // adding local insert event
         this.Log.add(new Event("insert",status.get(clientName),processId,clock));
         saveState();
-        return "The status is pending";
+        return "Reservation submitted for "+clientName+".";
 
     }
 
@@ -150,9 +150,16 @@ public class Reservation {
 
         for (Event event : Log){
 
-            String row = event.getOperationType() + " " +
-                    event.getOperation().getClientName()  + " " +
-                    event.getOperation().getFlights();
+            String row;
+            if(event.getOperationType() == "insert"){
+                row = event.getOperationType() + " " +
+                        event.getOperation().getClientName()  + " " +
+                        event.getOperation().getFlights();
+            }else{
+                row = event.getOperationType() + " " +
+                        event.getOperation().getClientName();
+            }
+
             row = row.replaceAll("\\[", "").replaceAll("\\]","");
             System.out.println(row);
 
