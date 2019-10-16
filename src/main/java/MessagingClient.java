@@ -22,7 +22,6 @@ public class MessagingClient {
         scanner = new Scanner(System.in);
     }
 
-
     public void send(Message message) throws IOException {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -42,7 +41,6 @@ public class MessagingClient {
                 // ignore close exception
             }
         }
-
 
     }
 }

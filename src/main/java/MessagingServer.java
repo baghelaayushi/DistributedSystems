@@ -23,6 +23,7 @@ public class MessagingServer {
         System.out.println("Running at "+ InetAddress.getLocalHost());
 
             byte[] buf = new byte[256];
+            System.out.println("HERE");
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             udpSocket.receive(packet);
           ByteArrayInputStream bis = new ByteArrayInputStream(packet.getData());
