@@ -76,7 +76,7 @@ public class Server {
 
     private static void processHosts(String self) throws FileNotFoundException {
 
-        BufferedReader hosts = new BufferedReader(new FileReader("./bin/knownhosts.json"));
+        BufferedReader hosts = new BufferedReader(new FileReader("./knownhosts.json"));
 
         Gson gson =new Gson();
         JsonParser parser = new JsonParser();

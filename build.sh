@@ -4,13 +4,11 @@
 rm -rf bin
 
 mkdir bin
-
 # My java files are in com/example/client, com/example/server, and com/example/main_code.
 # The main function is located in com/example/main_code/main.java
 
 cp -R src/ bin/
 
-cp -R
 
 # compile the .java files.
 # -d is used to specify the destination directory for the .class files
