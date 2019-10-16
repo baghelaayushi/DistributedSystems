@@ -1,5 +1,4 @@
 package helpers;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,5 +9,9 @@ public class Message {
     public Message(List<Event> log, int[][] matrixClock){
         this.log = log;
         this.matrixClock = matrixClock;
+    }
+
+    public int getMessageDetails(){
+        return this.log.size();
     }
 }

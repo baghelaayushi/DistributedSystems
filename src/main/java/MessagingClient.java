@@ -1,6 +1,8 @@
 import helpers.Message;
-
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -20,15 +22,25 @@ public class MessagingClient {
         scanner = new Scanner(System.in);
     }
 
-    public void send(Message toBeSent) throws IOException{
+    public void send(Message message) throws IOException {
 
-
-            String bs = "hello";
-            System.out.println("I WILL BE SENDING A MESSAGE" + this.serverAddress +" "+  this.port);
-
-            DatagramPacket p = new DatagramPacket(toBeSent.toString().getBytes(), toBeSent.toString().getBytes().length, serverAddress, port);
-
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out = null;
+        byte[] yourBytes;
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(message);
+            out.flush();
+            yourBytes = bos.toByteArray();
+            DatagramPacket p = new DatagramPacket(yourBytes, yourBytes.length, serverAddress, port);
             this.udpSocket.send(p);
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+        }
 
     }
 }

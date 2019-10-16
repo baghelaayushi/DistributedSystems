@@ -6,6 +6,8 @@ import helpers.Event;
 import java.io.*;
 
 
+import java.sql.Timestamp;
+
 import java.util.*;
 
 public class Reservation {
@@ -163,6 +165,17 @@ public class Reservation {
             System.out.println();
         }
     }
+    public boolean hasRec(Event e,int k){
+        return Matrix[k][e.getNodeId()] >= e.getTime();
+    }
+
+    public List<Event> getLog(){
+        return this.Log;
+    }
+    public int[][] getMatrix(){
+        return this.Matrix;
+    }
+
 
 }
 

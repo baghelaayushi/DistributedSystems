@@ -34,6 +34,24 @@ public class Server {
         }
 
     }
+    public static void sendMessage(String userInput,Reservation ob){
+        try {
+            String input[] = userInput.split(" ");
+            String clientName = input[1];
+            String destinationAddress = siteHashMap.get(clientName).getIpAddress();
+            int port = siteHashMap.get(clientName).getRandomPort();
+            int site_number = siteHashMap.get(clientName).getSiteNumber();
+            System.out.println(destinationAddress +" " + port);
+            List<Event> NP = new ArrayList<>();
+            for(Event e: log){
+                if(!ob.hasRec(e,site_number))
+                    NP.add(e);
+            }
+            new MessagingClient(destinationAddress, port).send(new Message(NP, matrixClock));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static void initialize() throws Exception{
         // initializing matrix and log for a site
@@ -65,12 +83,13 @@ public class Server {
         JsonObject hostsObject = parser.parse(hosts).getAsJsonObject().get("hosts").getAsJsonObject();
 
         number_of_hosts = hostsObject.keySet().size();
+        int site_number =0 ;
 
         for (Map.Entry<String, JsonElement> host : hostsObject.entrySet()){
             JsonObject siteInfo = host.getValue().getAsJsonObject();
             Site site = new Site(siteInfo.get("ip_address").getAsString(),
                     siteInfo.get("udp_start_port").getAsString(),
-                    siteInfo.get("udp_end_port").getAsString());
+                    siteInfo.get("udp_end_port").getAsString(),site_number++);
             siteHashMap.put(host.getKey(), site);
 
             //TODO : Update this with environment variables
@@ -137,7 +156,9 @@ public class Server {
                     ob.viewClock();
                     break;
                 case "send":
-                    sendMessage(userInput);
+                    sendMessage(userInput,ob);
+                    break;
+
                 default:
                     System.out.println("Enter a valid option");
             }
