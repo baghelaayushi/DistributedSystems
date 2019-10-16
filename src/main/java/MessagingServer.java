@@ -21,10 +21,10 @@ public class MessagingServer {
     }
 
     public void listen() throws Exception {
-        System.out.println("Running at "+ InetAddress.getLocalHost());
+//        System.out.println("Running at "+ InetAddress.getLocalHost());
 
             byte[] buf = new byte[256];
-            System.out.println("HERE");
+//            System.out.println("HERE");
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             udpSocket.receive(packet);
             Message yourObject = SerializationUtils.deserialize(packet.getData());

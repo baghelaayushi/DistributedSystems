@@ -28,7 +28,7 @@ public class MessagingClient {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;
-        System.out.println("THIS IS THE OTHER VERSION" + message.getMessageDetails());
+//        System.out.println("THIS IS THE OTHER VERSION" + message.getMessageDetails());
         byte[] yourBytes = SerializationUtils.serialize(message);
         try {
             DatagramPacket p = new DatagramPacket(yourBytes, yourBytes.length, serverAddress, port);
