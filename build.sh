@@ -20,8 +20,6 @@ cp -R
 
 javac -source 1.8 -target 1.8 -d bin -cp ./src/main/java/ src/main/java/**/*.java -cp ./src/main/java/ ./src/main/java/*.java -cp ./src/dependencies/gson-2.8.6.jar
 
-javac -source 1.8 -target 1.8 -d bin -cp ./src/main/java/ src/main/java/**/*.java -cp ./src/main/java/ ./src/main/java/*.java -cp ./src/dependencies/gson-2.8.6.jar
-
 
 
 # copy the run.sh script from the root of the project into the bin directory
