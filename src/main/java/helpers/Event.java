@@ -27,6 +27,7 @@ public class Event {
     }
 
     public int getTime() {
+
         return this.time;
     }
 
