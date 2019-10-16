@@ -11,11 +11,11 @@ public class Event {
     private int time;
     private int NodeId;
 
-    public Event(String operationType,ClientInfo operation,int NodeId, int time){
+    public Event(String operationType,ClientInfo operation,int NodeId){
         this.operationType = operationType;
         this.operation = operation;
         this.NodeId = NodeId;
-        this.time = time;
+        this.time = time++;
     }
 
     public String getOperationType(){

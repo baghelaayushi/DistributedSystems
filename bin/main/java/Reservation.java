@@ -15,10 +15,9 @@ public class Reservation {
     private static HashMap<String, ClientInfo> status = new HashMap<>();
     private static HashMap<Integer,Integer> flights = new HashMap<>(20);
 
-    private int clock = 0;
     private  List<Event> Log;
     private  int[][] Matrix;
-    private static final int processId = 0;
+    private static final int processId = 1;
 
 
     public Reservation(int[][] Matrix,List<Event> Log){
@@ -57,12 +56,11 @@ public class Reservation {
 
         // adding events to matrix clock
         this.Matrix[processId][processId]++;
-        clock++;
 
         status.put(clientName, new ClientInfo(clientName, flightNumbers, "pending"));
 
         // adding local insert event
-        this.Log.add(new Event("insert",status.get(clientName),processId,clock));
+        this.Log.add(new Event("insert",status.get(clientName),processId));
         saveState();
         return "The status is pending";
 
@@ -85,9 +83,8 @@ public class Reservation {
                 flights.put(flightsToCancel.get(i), currentSeats);
             }
 
-            clock++;
             //adding local delete event
-            this.Log.add(new Event("delete",status.get(clientName),processId, clock));
+            this.Log.add(new Event("delete",status.get(clientName),processId));
 
             status.remove(clientName);
 
