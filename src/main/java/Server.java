@@ -41,7 +41,7 @@ public class Server {
             String destinationAddress = siteHashMap.get(clientName).getIpAddress();
             int port = siteHashMap.get(clientName).getRandomPort();
             int site_number = siteHashMap.get(clientName).getSiteNumber();
-            System.out.println(destinationAddress +" " + port);
+//            System.out.println(destinationAddress +" " + port);
             List<Event> NP = new ArrayList<>();
             for(Event e: log){
                 if(!ob.hasRec(e,site_number))

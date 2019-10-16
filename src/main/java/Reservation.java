@@ -173,7 +173,11 @@ public class Reservation {
 
         for (int i = 0; i < Matrix.length; i++){
             for (int j = 0; j < Matrix[0].length; j++){
-                System.out.print(Matrix[i][j] + " ");
+                if(j!= Matrix[0].length -1)
+                    System.out.print(Matrix[i][j]+" ");
+                else
+                    System.out.print(Matrix[i][j]);
+
             }
             System.out.println();
         }
