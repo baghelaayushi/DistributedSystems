@@ -1,4 +1,5 @@
 import helpers.Message;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,21 +27,10 @@ public class MessagingServer {
             System.out.println("HERE");
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             udpSocket.receive(packet);
-          ByteArrayInputStream bis = new ByteArrayInputStream(packet.getData());
-          ObjectInput in = null;
-          try {
-            in = new ObjectInputStream(bis);
-            Message o = (Message) in.readObject();
-            System.out.println(o.getMessageDetails());
-          } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-          }
+            Message yourObject = SerializationUtils.deserialize(packet.getData());
+        System.out.println();
+            System.out.println(yourObject.getMessageDetails());
+
     }
 
 }

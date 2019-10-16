@@ -18,7 +18,7 @@ cp -R
 #I need to set -cp to be bin/ because I'm building from outside of bin.
 #javac -d bin -sourcepath src -cp bin/ src/main/java/**/*.java
 
-javac -source 1.8 -target 1.8 -d bin -cp ./src/main/java/ src/main/java/**/*.java -cp ./src/main/java/ ./src/main/java/*.java -cp ./src/dependencies/gson-2.8.6.jar
+javac -source 1.8 -target 1.8 -d bin  -cp ./src/main/java/ src/main/java/**/*.java -cp ./src/main/java/ ./src/main/java/*.java -cp ./src/dependencies/gson-2.8.6.jar:./src/dependencies/commons-lang3-3.5.jar
 
 
 

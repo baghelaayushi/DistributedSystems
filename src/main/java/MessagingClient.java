@@ -1,4 +1,6 @@
 import helpers.Message;
+import org.apache.commons.lang3.SerializationUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -26,12 +28,9 @@ public class MessagingClient {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;
-        byte[] yourBytes;
+        System.out.println("THIS IS THE OTHER VERSION" + message.getMessageDetails());
+        byte[] yourBytes = SerializationUtils.serialize(message);
         try {
-            out = new ObjectOutputStream(bos);
-            out.writeObject(message);
-            out.flush();
-            yourBytes = bos.toByteArray();
             DatagramPacket p = new DatagramPacket(yourBytes, yourBytes.length, serverAddress, port);
             this.udpSocket.send(p);
         } finally {
