@@ -140,7 +140,9 @@ public class Reservation {
 
         for (Map.Entry<String, ClientInfo> report : status.entrySet()){
             ClientInfo info = report.getValue();
-            String row = report.getKey()+ " "+ info.getFlights() + " " + info.getStatus();
+            String concatFlights = info.getFlights().toString().replaceAll("\\[","").replaceAll("\\]","").replaceAll(" ","");
+
+            String row = report.getKey()+ " "+ concatFlights + " " + info.getStatus();
             row = row.replaceAll("\\[", "").replaceAll("\\]","");
             System.out.println(row);
         }
