@@ -16,6 +16,8 @@
 .idea/**/compiler.xml
 .idea/modules.xml
 
+bin/
+
 # Generated files
 .idea/**/contentModel.xml
 
