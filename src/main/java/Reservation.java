@@ -151,10 +151,11 @@ public class Reservation {
         for (Event event : Log){
 
             String row;
+            String concatFlights = event.getOperation().getFlights().toString().replaceAll("\\[","").replaceAll("\\]","").replaceAll(" ","");
             if(event.getOperationType() == "insert"){
                 row = event.getOperationType() + " " +
                         event.getOperation().getClientName()  + " " +
-                        event.getOperation().getFlights();
+                        concatFlights;
             }else{
                 row = event.getOperationType() + " " +
                         event.getOperation().getClientName();
