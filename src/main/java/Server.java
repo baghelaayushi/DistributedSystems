@@ -76,7 +76,7 @@ public class Server {
 
     private static void processHosts(String self) throws FileNotFoundException {
 
-        BufferedReader hosts = new BufferedReader(new FileReader("./src/bin/knownhosts.json"));
+        BufferedReader hosts = new BufferedReader(new FileReader("./bin/knownhosts.json"));
 
         Gson gson =new Gson();
         JsonParser parser = new JsonParser();
@@ -104,7 +104,7 @@ public class Server {
 
     public static void main( String[] args) {
 
-        boolean devMode = true;
+        boolean devMode = false;
         String self = args.length == 0 ? "alpha" : args[0];
         if(args.length < 0 && !devMode){
             System.out.println("Select the current site");
@@ -128,7 +128,7 @@ public class Server {
 
         Scanner in = new Scanner(System.in);
         String userInput;
-        System.out.println("Enter an option");
+//        System.out.println("Enter an option");
         while (!(userInput = in.nextLine()).equals("exit")){
 
             String input[] = userInput.split(" ");
