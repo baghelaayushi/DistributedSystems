@@ -41,7 +41,7 @@ public class Server {
             String destinationAddress = siteHashMap.get(clientName).getIpAddress();
             int port = siteHashMap.get(clientName).getRandomPort();
             int site_number = siteHashMap.get(clientName).getSiteNumber();
-            System.out.println(destinationAddress +" " + port);
+//            System.out.println(destinationAddress +" " + port);
             List<Event> NP = new ArrayList<>();
             for(Event e: log){
                 if(!ob.hasRec(e,site_number))
@@ -76,8 +76,7 @@ public class Server {
 
     private static void processHosts(String self) throws FileNotFoundException {
 
-        BufferedReader hosts = new BufferedReader(new FileReader("./src/bin/knownhosts.json"));
-
+        BufferedReader hosts = new BufferedReader(new FileReader("./knownhosts.json"));
         Gson gson =new Gson();
         JsonParser parser = new JsonParser();
         JsonObject hostsObject = parser.parse(hosts).getAsJsonObject().get("hosts").getAsJsonObject();
@@ -128,7 +127,7 @@ public class Server {
 
         Scanner in = new Scanner(System.in);
         String userInput;
-        System.out.println("Enter an option");
+//        System.out.println("Enter an option");
         while (!(userInput = in.nextLine()).equals("exit")){
 
             String input[] = userInput.split(" ");
@@ -161,7 +160,7 @@ public class Server {
                     break;
 
                 default:
-                    System.out.println("Enter a valid option");
+//                    System.out.println("Enter a valid option");
             }
 
         }
