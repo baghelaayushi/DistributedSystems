@@ -40,7 +40,6 @@ public class Server {
             String destinationAddress = siteHashMap.get(clientName).getIpAddress();
             int port = siteHashMap.get(clientName).getRandomPort();
             int site_number = siteHashMap.get(clientName).getSiteNumber();
-//            System.out.println(destinationAddress +" " + port);
             List<Event> NP = new ArrayList<>();
             for(Event e: log){
                 if(!ob.hasRec(e,site_number))
@@ -162,19 +161,6 @@ public class Server {
 //                    System.out.println("Enter a valid option");
             }
 
-        }
-    }
-
-    public static void sendMessage(String userInput){
-        try {
-            String input[] = userInput.split(" ");
-            String clientName = input[1];
-            String destinationAddress = siteHashMap.get(clientName).getIpAddress();
-            int port = siteHashMap.get(clientName).getRandomPort();
-            System.out.println(destinationAddress +" " + port);
-            new MessagingClient(destinationAddress, port).send(new Message(log, matrixClock));
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

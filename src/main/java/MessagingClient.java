@@ -25,6 +25,8 @@ public class MessagingClient {
         scanner = new Scanner(System.in);
     }
 
+
+
     public void send(Message message) throws IOException {
 
 
