@@ -23,9 +23,9 @@ public class MessagingServer {
         this.port = port;
         this.udpSocket = new DatagramSocket(this.port);
     }
-    public void updateRecords(Message message,int ReceivedId){
+    public void updateRecords(Message message){
         Reservation ob = Server.getReservation();
-        ob.update(message,ReceivedId);
+        ob.update(message,message.getSiteId());
     }
 
     public void listen() throws Exception {
@@ -39,12 +39,12 @@ public class MessagingServer {
             ByteArrayInputStream in = new ByteArrayInputStream(data);
             ObjectInputStream is = new ObjectInputStream(in);
             try {
-                Message student = (Message) is.readObject();
+                Message message = (Message) is.readObject();
 
                 //uncomment below and add site id
 
-                //updateRecords(student,Server.getSiteId(incomingPacket.getAddress()));
-                System.out.println("Student object received = "+ student.getMessageDetails());
+                updateRecords(message);
+                System.out.println("Student object received = "+ message.getMessageDetails());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

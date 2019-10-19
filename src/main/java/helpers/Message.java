@@ -9,14 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Message implements Serializable {
+
+    public int getSiteId() {
+        return siteId;
+    }
+
+    private int siteId;
     private  List<Event> log ;
     private  int[][] matrixClock;
-//    private List<Event> log2;
 
-    public Message(List<Event> logD, int[][] matrixClockD){
-//        this.log = logD;
+    public Message(List<Event> logD, int[][] matrixClockD, int siteId){
         this.matrixClock = matrixClockD;
         this.log = new ArrayList<>(logD);
+        this.siteId = siteId;
     }
 
     public List<Event> getMessageDetails(){

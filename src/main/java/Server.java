@@ -46,7 +46,7 @@ public class Server {
                 if(!ob.hasRec(e,site_number))
                     NP.add(e);
             }
-            new MessagingClient(destinationAddress, port).send(new Message(NP, matrixClock));
+            new MessagingClient(destinationAddress, port).send(new Message(NP, matrixClock, mySite.getSiteNumber()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -168,18 +168,6 @@ public class Server {
         return acceptUserInput();
     }
 
-    public static void sendMessage(String userInput){
-        try {
-            String input[] = userInput.split(" ");
-            String clientName = input[1];
-            String destinationAddress = siteHashMap.get(clientName).getIpAddress();
-            int port = siteHashMap.get(clientName).getRandomPort();
-            System.out.println(destinationAddress +" " + port);
-            new MessagingClient(destinationAddress, port).send(new Message(log, matrixClock));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public static int getTotalSites(){
         return siteHashMap.size();
     }
