@@ -7,13 +7,13 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 
 public class MessagingServer {
 
     private DatagramSocket udpSocket;
     private int port;
+    byte[] incomingData = new byte[1024];
 
     public MessagingServer(int port) throws SocketException, IOException {
         this.port = port;
@@ -21,16 +21,22 @@ public class MessagingServer {
     }
 
     public void listen() throws Exception {
-//        System.out.println("Running at "+ InetAddress.getLocalHost());
 
-            byte[] buf = new byte[256];
-//            System.out.println("HERE");
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
-            udpSocket.receive(packet);
-            Message yourObject = SerializationUtils.deserialize(packet.getData());
-        System.out.println();
-            System.out.println(yourObject.getMessageDetails());
+        while (true){
 
+            DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
+            udpSocket.receive(incomingPacket);
+            byte[] data = incomingPacket.getData();
+            ByteArrayInputStream in = new ByteArrayInputStream(data);
+            ObjectInputStream is = new ObjectInputStream(in);
+            try {
+                Message student = (Message) is.readObject();
+                System.out.println("Student object received = "+ student.getMessageDetails());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 }

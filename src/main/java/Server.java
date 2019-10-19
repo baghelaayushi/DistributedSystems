@@ -23,7 +23,6 @@ public class Server {
     private static List<Event> log = new ArrayList<>();
     private static int[][] matrixClock;
 
-
     public static void bootstrapProject(String selfIdentifier) throws FileNotFoundException {
 
         try {

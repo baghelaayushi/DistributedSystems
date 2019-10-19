@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Message implements Serializable {
-    private static List<Event> log = new ArrayList<>();
-    private static int[][] matrixClock;
+    private  List<Event> log ;
+    private  int[][] matrixClock;
+//    private List<Event> log2;
 
-    public Message(List<Event> log, int[][] matrixClock){
-        this.log = log;
-        this.matrixClock = matrixClock;
+    public Message(List<Event> logD, int[][] matrixClockD){
+//        this.log = logD;
+        this.matrixClock = matrixClockD;
+        this.log = new ArrayList<>(logD);
     }
 
     public int getMessageDetails(){
-        return this.log.size();
+        return log.size();
     }
 }
