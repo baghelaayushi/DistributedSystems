@@ -59,7 +59,6 @@ public class Server {
         log = new ArrayList<>();
 
         MessagingServer client = new MessagingServer(mySite.getRandomPort());
-
         Runnable R =  new Runnable() {
             @Override
             public void run() {
