@@ -193,22 +193,46 @@ import java.util.*;
     public int[][] getMatrix(){
         return this.Matrix;
     }
+    public void updateDictionary(List<Event> NE){
+        HashSet<String> deleteSet = new HashSet<>();
+        HashSet<String> insertSet = new HashSet<>();
+        for(Event e: NE){
+            if(e.getOperationType().equals("delete"))
+                deleteSet.add(e.getOperation().getClientName());
+            else
+                insertSet.add(e.getOperation().getClientName());
+
+        }
+        for(Event e:NE){
+            if(insertSet.contains(e.getOperation().getClientName())&& !(deleteSet.contains(e.getOperation().getClientName())))
+                status.put(e.getOperation().getClientName(),e.getOperation());
+        }
+    }
     public void update(Message message,int receivedSiteID){
             List<Event> NE = new ArrayList<>();
             List<Event> myLog = this.Log;
             List<Event> receivedLog = message.getMessageDetails();
             int receivedClock[][] = message.getMatrixClock();
             for(Event e:receivedLog){
-                if(!hasRec(e,e.getTime())){
+                if(!hasRec(e,processId)){
                     NE.add(e);
                 }
+            }
+            updateDictionary(NE);
+            System.out.println();
+            for(int i[]:receivedClock){
+              for (int j: i)
+                  System.out.print(j);
+              System.out.println();
             }
             for(int i=0;i<Server.getTotalSites();i++){
                 Matrix[processId][i] = Integer.max(Matrix[processId][i],receivedClock[receivedSiteID][i]);
             }
+            System.out.println("Total sites are");
+            System.out.println(Server.getTotalSites());
             for(int i=0;i<Server.getTotalSites();i++){
-                for(int j=0;i<Server.getTotalSites();i++){
-                    Matrix[processId][i] = Integer.max(Matrix[i][j],receivedClock[i][j]);
+                for(int j=0;j<Server.getTotalSites();j++){
+                    Matrix[i][j] = Integer.max(Matrix[i][j],receivedClock[i][j]);
                 }
             }
     }

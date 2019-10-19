@@ -23,6 +23,8 @@ public class Server {
     private static List<Event> log = new ArrayList<>();
     private static int[][] matrixClock;
 
+    Reservation ob = new Reservation(matrixClock, log, mySite.getSiteNumber());
+
     public static void bootstrapProject(String selfIdentifier) throws FileNotFoundException {
 
         try {
@@ -119,10 +121,9 @@ public class Server {
 
     }
 
-    private static Reservation acceptUserInput() {
-
-        Reservation ob = new Reservation(matrixClock, log, mySite.getSiteNumber());
-
+    private static void acceptUserInput() {
+        Server server = new Server();
+        Reservation ob = server.ob;
         Scanner in = new Scanner(System.in);
         String userInput;
 //        System.out.println("Enter an option");
@@ -162,22 +163,14 @@ public class Server {
             }
 
         }
-        return ob;
     }
     public static Reservation getReservation(){
-        return acceptUserInput();
+        Server server = new Server();
+        return server.ob;
     }
 
     public static int getTotalSites(){
         return siteHashMap.size();
-    }
-    public static int getSiteId(String ipAddress){
-        for(Map.Entry<String,Site> sites:siteHashMap.entrySet()){
-            if(sites.getValue().getIpAddress().equals(ipAddress)){
-                return sites.getValue().getSiteNumber();
-            }
-        }
-        return 0;
     }
 
 }

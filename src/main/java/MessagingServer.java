@@ -24,7 +24,9 @@ public class MessagingServer {
         this.udpSocket = new DatagramSocket(this.port);
     }
     public void updateRecords(Message message){
+        System.out.println("here");
         Reservation ob = Server.getReservation();
+        System.out.println("site id is:"+ message.getSiteId());
         ob.update(message,message.getSiteId());
     }
 
@@ -42,9 +44,10 @@ public class MessagingServer {
                 Message message = (Message) is.readObject();
 
                 //uncomment below and add site id
+                System.out.println("Student object received = "+ message.getMessageDetails());
 
                 updateRecords(message);
-                System.out.println("Student object received = "+ message.getMessageDetails());
+
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
