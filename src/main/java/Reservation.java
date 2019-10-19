@@ -2,6 +2,7 @@
 import com.google.gson.*;
 import helpers.ClientInfo;
 import helpers.Event;
+import helpers.Message;
 
 import java.io.*;
 
@@ -19,7 +20,6 @@ public class Reservation {
     private  List<Event> Log;
     private  int[][] Matrix;
     private static final int processId = 0;
-
 
     public Reservation(int[][] Matrix,List<Event> Log){
         for(int i=1;i<=20;i++)
@@ -181,8 +181,30 @@ public class Reservation {
             System.out.println();
         }
     }
+
     public boolean hasRec(Event e,int k){
         return Matrix[k][e.getNodeId()] >= e.getTime();
+    }
+
+    public void processReciept(Message message){
+        List<Event> newEvents = new ArrayList<>();
+        for (Event each : message.getLog()){
+            if(!Log.contains(each)){
+                newEvents.add(each);
+            }
+        }
+        for (int i = 0; i < Matrix.length; i++){
+            Matrix[processId][i] = Math.max(Matrix[processId][i],message.getMatrixClock()[message.getProcessId()][i]);
+        }
+
+        for (int i = 0; i < Matrix.length; i++){
+            for (int j = 0; j < Matrix[0].length; j++){
+                Matrix[i][j] = Math.max(Matrix[i][j],message.getMatrixClock()[i][j]);
+            }
+            System.out.println();
+        }
+
+
     }
 
     public List<Event> getLog(){

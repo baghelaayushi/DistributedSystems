@@ -22,7 +22,7 @@ public class Server {
 
     private static List<Event> log = new ArrayList<>();
     private static int[][] matrixClock;
-
+    private static Reservation ob;
     public static void bootstrapProject(String selfIdentifier) throws FileNotFoundException {
 
         try {
@@ -45,7 +45,7 @@ public class Server {
                 if(!ob.hasRec(e,site_number))
                     NP.add(e);
             }
-            new MessagingClient(destinationAddress, port).send(new Message(NP, matrixClock));
+            new MessagingClient(destinationAddress, port).send(new Message(NP, matrixClock, mySite.getSiteNumber()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,7 +56,9 @@ public class Server {
         matrixClock  = new int[number_of_hosts][number_of_hosts];
         log = new ArrayList<>();
 
-        MessagingServer client = new MessagingServer(mySite.getRandomPort());
+        ob = new Reservation(matrixClock, log);
+
+        MessagingServer client = new MessagingServer(mySite.getRandomPort(), ob);
 
         Runnable R =  new Runnable() {
             @Override
@@ -121,7 +123,6 @@ public class Server {
 
     private static void acceptUserInput() {
 
-        Reservation ob = new Reservation(matrixClock, log);
 
         Scanner in = new Scanner(System.in);
         String userInput;

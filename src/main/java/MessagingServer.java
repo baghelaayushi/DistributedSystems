@@ -14,10 +14,11 @@ public class MessagingServer {
     private DatagramSocket udpSocket;
     private int port;
     byte[] incomingData = new byte[1024];
-
-    public MessagingServer(int port) throws SocketException, IOException {
+    private Reservation reservation;
+    public MessagingServer(int port, Reservation reservation) throws SocketException, IOException {
         this.port = port;
         this.udpSocket = new DatagramSocket(this.port);
+        this.reservation = reservation;
     }
 
     public void listen() throws Exception {
@@ -30,8 +31,9 @@ public class MessagingServer {
             ByteArrayInputStream in = new ByteArrayInputStream(data);
             ObjectInputStream is = new ObjectInputStream(in);
             try {
-                Message student = (Message) is.readObject();
-                System.out.println("Student object received = "+ student.getMessageDetails());
+                Message message = (Message) is.readObject();
+                System.out.println("Student object received = "+ message.getMessageDetails());
+                reservation.processReciept(message);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
