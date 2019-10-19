@@ -9,41 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Message implements Serializable {
-    private static List<Event> log = new ArrayList<>();
-    private static int[][] matrixClock;
+    private  List<Event> log ;
+    private  int[][] matrixClock;
+//    private List<Event> log2;
 
-    public Message(List<Event> log, int[][] matrixClock){
-        this.log = log;
-        this.matrixClock = matrixClock;
+    public Message(List<Event> logD, int[][] matrixClockD){
+//        this.log = logD;
+        this.matrixClock = matrixClockD;
+        this.log = new ArrayList<>(logD);
     }
 
     public List<Event> getMessageDetails(){
-        return this.log;
+        return log;
     }
-    public int[][] getMatrix(){
-        return this.matrixClock;
-    }
-    public JsonObject codeToJSON(Message message){
-        Gson gson = new Gson();
-        JsonArray log = new JsonArray();
-        for(Event e: message.getMessageDetails()){
-            String client_ob = gson.toJson(e);
-            log.add(client_ob);
-        }
-
-        String clock = "";
-        for(int i[]: message.getMatrix()){
-            for(int j:i){
-                clock += Integer.toString(j);
-            }
-        }
-        JsonArray clockObject = new JsonArray();
-        clockObject.add(clock);
-        JsonObject jsonMessage = new JsonObject();
-        jsonMessage.add("log:",log);
-        jsonMessage.add("clock:",clockObject);
-
-        return jsonMessage;
+    public int[][] getMatrixClock(){
+        return matrixClock;
     }
 
 }

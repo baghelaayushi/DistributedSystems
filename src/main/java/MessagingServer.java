@@ -10,7 +10,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,74 +18,38 @@ public class MessagingServer {
 
     private DatagramSocket udpSocket;
     private int port;
-    public Message decodeFromJSON(JsonObject jsonMessage){
-        List<Event> log = new ArrayList<>();
-        Gson gson = new Gson();
-        JsonArray receivedLog = jsonMessage.getAsJsonArray("log:");
-        JsonArray receivedMatrix = jsonMessage.getAsJsonArray("clock:");
-        for(JsonElement element:receivedLog){
-            Event event = gson.fromJson(element.getAsString(),Event.class);
-            // adding the events to log
-            log.add(event);
-        }
-        String clock = "";
-        for(JsonElement e:receivedMatrix){
-            clock = e.getAsString();
-        }
-        int tempClock[][] = new int[2][2];
-        int k = 0;
-        for(int i=0;i<tempClock.length;i++){
-            for(int j =0;j<tempClock[0].length;j++){
-                tempClock[i][j] = (int)clock.charAt(k);
-                k++;
-            }
-        }
-        return new Message(log,tempClock);
-    }
 
     public MessagingServer(int port) throws SocketException, IOException {
         this.port = port;
         this.udpSocket = new DatagramSocket(this.port);
     }
+    public void updateRecords(Message message,int ReceivedId){
+        Reservation ob = Server.getReservation();
+        ob.update(message,ReceivedId);
+    }
 
     public void listen() throws Exception {
-//        System.out.println("Running at "+ InetAddress.getLocalHost());
-            byte[] buf = new byte[1024];
-            System.out.println("HERE");
-            while(true) {
-                DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                udpSocket.receive(packet);
-                String recievedString = new String(packet.getData(),0,packet.getLength());
-                System.out.println("Gotcha");
-                System.out.println(recievedString);
-                JsonParser parser = new JsonParser();
-                JsonObject parsed = parser.parse(recievedString).getAsJsonObject();
-                Message recievedMessage = decodeFromJSON(parsed);
-                System.out.println(recievedMessage.getMessageDetails().size());
-                /*ByteArrayInputStream in = new ByteArrayInputStream(packet.getData());
-                ObjectInputStream is = new ObjectInputStream(in);
-                try {
-                    Message yourObject = (Message) is.readObject();
-                    System.out.println("Student object received = "+yourObject);
-                    System.out.println(yourObject.getMessageDetails().size() + "is the size");
-                    for (int i = 0; i < yourObject.getMessageDetails().size(); i++){
-                        System.out.println(yourObject.getMessageDetails().get(i).getOperationType());
-                    }
-                    System.out.println(packet.getData().length);
-                    System.out.println(packet.getData()[0]);
-                    System.out.println(yourObject.getMessageDetails());
-                    System.out.println("beta received");
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }*/
+        byte incomingData[] = new byte[1024];
 
+        while (true){
 
+            DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
+            udpSocket.receive(incomingPacket);
+            byte[] data = incomingPacket.getData();
+            ByteArrayInputStream in = new ByteArrayInputStream(data);
+            ObjectInputStream is = new ObjectInputStream(in);
+            try {
+                Message student = (Message) is.readObject();
 
-                //Message yourObject = SerializationUtils.deserialize(packet.getData());
+                //uncomment below and add site id
 
-
+                //updateRecords(student,Server.getSiteId(incomingPacket.getAddress()));
+                System.out.println("Student object received = "+ student.getMessageDetails());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
 
+        }
     }
 
 }

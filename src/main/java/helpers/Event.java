@@ -2,9 +2,10 @@ package helpers;
 
 import helpers.ClientInfo;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Event {
+public class Event implements Serializable {
 
     private String operationType;
     private ClientInfo operation;

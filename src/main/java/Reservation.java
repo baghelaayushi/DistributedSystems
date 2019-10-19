@@ -2,6 +2,7 @@
 import com.google.gson.*;
 import helpers.ClientInfo;
 import helpers.Event;
+import helpers.Message;
 
 import java.io.*;
 
@@ -10,24 +11,25 @@ import java.sql.Timestamp;
 
 import java.util.*;
 
-public class Reservation {
-    // status is the dictionary
-    private static HashMap<String, ClientInfo> status = new HashMap<>();
-    private static HashMap<Integer,Integer> flights = new HashMap<>(20);
+    public class Reservation {
+        // status is the dictionary
+        private static HashMap<String, ClientInfo> status = new HashMap<>();
+        private static HashMap<Integer,Integer> flights = new HashMap<>(20);
 
-    private int clock = 0;
-    private  List<Event> Log;
-    private  int[][] Matrix;
-    private static final int processId = 0;
+        private int clock = 0;
+        private  List<Event> Log;
+        private  int[][] Matrix;
+        private  int processId;
 
 
-    public Reservation(int[][] Matrix,List<Event> Log){
+    public Reservation(int[][] Matrix,List<Event> Log, int processId){
         for(int i=1;i<=20;i++)
             flights.put(i,2);
 
         // initializing matrix and log for a site
         this.Matrix  = Matrix;
         this.Log = Log;
+        this.processId = processId;
     }
 
     // To check whether a client can reserve a flight or not
@@ -182,7 +184,7 @@ public class Reservation {
         }
     }
     public boolean hasRec(Event e,int k){
-        return Matrix[k][e.getNodeId()] >= e.getTime();
+        return getMatrix()[k][e.getNodeId()] >= e.getTime();
     }
 
     public List<Event> getLog(){
@@ -190,6 +192,25 @@ public class Reservation {
     }
     public int[][] getMatrix(){
         return this.Matrix;
+    }
+    public void update(Message message,int receivedSiteID){
+            List<Event> NE = new ArrayList<>();
+            List<Event> myLog = this.Log;
+            List<Event> receivedLog = message.getMessageDetails();
+            int receivedClock[][] = message.getMatrixClock();
+            for(Event e:receivedLog){
+                if(!hasRec(e,e.getTime())){
+                    NE.add(e);
+                }
+            }
+            for(int i=0;i<Server.getTotalSites();i++){
+                Matrix[processId][i] = Integer.max(Matrix[processId][i],receivedClock[receivedSiteID][i]);
+            }
+            for(int i=0;i<Server.getTotalSites();i++){
+                for(int j=0;i<Server.getTotalSites();i++){
+                    Matrix[processId][i] = Integer.max(Matrix[i][j],receivedClock[i][j]);
+                }
+            }
     }
 
 

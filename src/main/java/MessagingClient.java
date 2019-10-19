@@ -16,50 +16,35 @@ import java.util.Scanner;
 
 public class MessagingClient {
 
-    private DatagramSocket udpSocket;
+    private DatagramSocket Socket;
     private InetAddress serverAddress;
     private int port;
     private Scanner scanner;
+    private byte[] buf;
 
     public MessagingClient(String destinationAddr, int port) throws IOException {
         this.serverAddress = InetAddress.getByName(destinationAddr);
         this.port = port;
-        udpSocket = new DatagramSocket(this.port);
+        Socket = new DatagramSocket(this.port);
         scanner = new Scanner(System.in);
     }
 
     public void send(Message message) throws IOException {
-        Gson gson = new Gson();
-        String sendMessage = gson.toJson(message.codeToJSON(message));
-        byte buf[] = sendMessage.getBytes();
-        DatagramPacket p = new DatagramPacket(buf, buf.length, serverAddress, port);
-        this.udpSocket.send(p);
-        System.out.println(buf.length);
-        System.out.println(sendMessage);
-
-        /*ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
-//        System.out.println("THIS IS THE OTHER VERSION" + message.getMessageDetails());
-
-        //byte[] yourBytes = SerializationUtils.serialize(message);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ObjectOutput os = new ObjectOutputStream(outputStream);
-        os.writeObject(message);
-        byte[] yourBytes = outputStream.toByteArray();
-        System.out.println(yourBytes.length);
         try {
-            DatagramPacket p = new DatagramPacket(yourBytes, yourBytes.length, serverAddress, port);
-            this.udpSocket.send(p);
-            System.out.println(message.getMessageDetails());
-            System.out.println("alpha sent");
-        } finally {
-            try {
-                bos.close();
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-        }*/
 
+            byte[] incomingData = new byte[1024];
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(outputStream);
+            os.writeObject(message);
+            byte[] data = outputStream.toByteArray();
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, this.serverAddress, this.port);
+            Socket.send(sendPacket);
+            System.out.println("Message sent from client");
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }
