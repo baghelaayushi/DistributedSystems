@@ -24,9 +24,9 @@ public class MessagingServer {
         this.udpSocket = new DatagramSocket(this.port);
     }
     public void updateRecords(Message message){
-        System.out.println("here");
+//         System.out.println("here");
         Reservation ob = Server.getReservation();
-        System.out.println("site id is:"+ message.getSiteId());
+//         System.out.println("site id is:"+ message.getSiteId());
         if(message.getMarker()) {
             ob.update(message, message.getSiteId());
         }
