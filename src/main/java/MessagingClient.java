@@ -41,7 +41,7 @@ public class MessagingClient {
                 byte[] data = outputStream.toByteArray();
                 DatagramPacket sendPacket = new DatagramPacket(data, data.length, this.serverAddress, this.port);
                 Socket.send(sendPacket);
-                System.out.println("Message sent from client");
+//                 System.out.println("Message sent from client");
                 Socket.close();
 
         }catch (IOException e) {
