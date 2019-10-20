@@ -1,3 +1,7 @@
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import helpers.Event;
 import helpers.Message;
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -26,9 +30,8 @@ public class MessagingClient {
     }
 
     public void send(Message message) throws IOException {
-
-
         try {
+
 
             byte[] incomingData = new byte[1024];
 
@@ -38,11 +41,15 @@ public class MessagingClient {
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, this.serverAddress, this.port);
             Socket.send(sendPacket);
-            System.out.println("Message sent from client");
+            Socket.close();
 
         }catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public void close(){
+        Socket.close();
     }
 }

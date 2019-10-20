@@ -1,7 +1,6 @@
 
 import com.google.gson.*;
-import helpers.ClientInfo;
-import helpers.Event;
+import helpers.*;
 
 import java.io.*;
 
@@ -16,18 +15,36 @@ public class Reservation {
     private static HashMap<Integer,Integer> flights = new HashMap<>(20);
 
     private int clock = 0;
+
+    public static HashMap<String, ClientInfo> getStatus() {
+        return status;
+    }
+
+    public static HashMap<Integer, Integer> getFlights() {
+        return flights;
+    }
+
+    public int getClock() {
+        return clock;
+    }
+
+    public int getProcessId() {
+        return processId;
+    }
+
     private  List<Event> Log;
     private  int[][] Matrix;
-    private static final int processId = 0;
+    private  int processId;
 
 
-    public Reservation(int[][] Matrix,List<Event> Log){
+    public Reservation(int number_of_hosts, int processId){
         for(int i=1;i<=20;i++)
             flights.put(i,2);
 
         // initializing matrix and log for a site
-        this.Matrix  = Matrix;
-        this.Log = Log;
+        this.Matrix  = new int[number_of_hosts][number_of_hosts];
+        this.Log = new ArrayList<>();
+        this.processId = processId;
     }
 
     // To check whether a client can reserve a flight or not
@@ -149,11 +166,13 @@ public class Reservation {
 
     public void viewLog(){
 
-        for (Event event : Log){
-
+        for (Event event : this.getLog()){
+//            System.out.println(event.getOperationType()+ " " + event.getOperation().getClientName() + " " + event.getOperation().getFlights());
             String row;
+//            System.out.println(event.getOperation().getFlights().toString());
             String concatFlights = event.getOperation().getFlights().toString().replaceAll("\\[","").replaceAll("\\]","").replaceAll(" ","");
-            if(event.getOperationType() == "insert"){
+//            System.out.println(concatFlights);
+            if(event.getOperationType().equals("insert")){
                 row = event.getOperationType() + " " +
                         event.getOperation().getClientName()  + " " +
                         concatFlights;
@@ -182,7 +201,7 @@ public class Reservation {
         }
     }
     public boolean hasRec(Event e,int k){
-        return Matrix[k][e.getNodeId()] >= e.getTime();
+        return getMatrix()[k][e.getNodeId()] >= e.getTime();
     }
 
     public List<Event> getLog(){
@@ -190,6 +209,107 @@ public class Reservation {
     }
     public int[][] getMatrix(){
         return this.Matrix;
+    }
+    public void updateDictionary(List<Event> NE){
+        HashSet<String> deleteSet = new HashSet<>();
+        HashSet<String> insertSet = new HashSet<>();
+        for(Event e: NE){
+            if(e.getOperationType().equals("delete"))
+                deleteSet.add(e.getOperation().getClientName());
+            else
+                insertSet.add(e.getOperation().getClientName());
+
+        }
+        for(Event e:NE){
+            if(insertSet.contains(e.getOperation().getClientName())&& !(deleteSet.contains(e.getOperation().getClientName())))
+                status.put(e.getOperation().getClientName(),e.getOperation());
+        }
+    }
+    public void logTruncation(List<Event> NE, int totalSites){
+
+
+        Collection<Event> col = new ArrayList<Event>(this.Log);
+
+        col.addAll(NE);
+        for (Event each : NE){
+            System.out.println(each.getOperation().getClientName() + " " + each.getOperation().getFlights());
+        }
+        this.Log = new ArrayList<>(col);
+
+//        List<Event> partialLog = new ArrayList<>();
+//        boolean marker = true;
+//        for(Event e:this.Log){
+//            marker = true;
+//            for(int j=0;j<totalSites;j++){
+//                if(!hasRec(e,j)) {
+//                    marker = false;
+//                    break;
+//                }
+//            }
+//            if(!marker)
+//                partialLog.add(e);
+//        }
+//        this.Log = partialLog;
+//        System.out.println("partial log is:");
+//        System.out.println(partialLog);
+    }
+    public void update(Message mess,int receivedSiteID){
+
+        normalMessage message = (normalMessage) mess;
+        List<Event> NE = new ArrayList<>();
+        List<Event> myLog = this.Log;
+        List<Event> receivedLog = message.getMessageDetails();
+        int receivedClock[][] = message.getMatrixClock();
+        for(Event e:receivedLog){
+            if(!hasRec(e,processId)){
+//                System.out.println(e.getOperation().getFlights());
+                NE.add(e);
+            }
+        }
+        updateDictionary(NE);
+//        System.out.println(NE);
+//        for(int i[]:receivedClock){
+//            for (int j: i)
+//                System.out.print(j);
+//            System.out.println();
+//        }
+        for(int i=0;i<Server.getTotalSites();i++){
+            Matrix[processId][i] = Integer.max(Matrix[processId][i],receivedClock[receivedSiteID][i]);
+        }
+//        System.out.println("Total sites are");
+//        System.out.println(Server.getTotalSites());
+        for(int i=0;i<Server.getTotalSites();i++){
+            for(int j=0;j<Server.getTotalSites();j++){
+                Matrix[i][j] = Integer.max(Matrix[i][j],receivedClock[i][j]);
+            }
+        }
+//        System.out.println("truncating the log:");
+        logTruncation(NE,Server.getTotalSites());
+
+    }
+    public void updateSmall(Message mess){
+        smallMessage message = (smallMessage) mess;
+        List<Event> NE = new ArrayList<>();
+        List<Event> myLog = this.Log;
+        List<Event> receivedLog = message.getMessageDetails();
+        int receivedClock[] = message.getRow();
+        for(Event e:receivedLog){
+            if(!hasRec(e,processId)){
+                NE.add(e);
+            }
+        }
+        updateDictionary(NE);
+
+        for(int i=0;i<Server.getTotalSites();i++){
+            Matrix[processId][i] = Integer.max(Matrix[processId][i],receivedClock[i]);
+        }
+        for(int i=0;i<Server.getTotalSites();i++){
+            Matrix[message.getSiteId()][i] = Integer.max(Matrix[message.getSiteId()][i],receivedClock[i]);
+        }
+
+//        System.out.println("truncating the log:");
+        logTruncation(NE,Server.getTotalSites());
+
     }
 
 
