@@ -165,7 +165,7 @@ public class Reservation {
     }
 
     public void viewLog(){
-        System.out.println("VIEWING LOG" + this.getLog().size());
+//        System.out.println("VIEWING LOG" + this.getLog().size());
         for (Event event : this.getLog()){
             String row;
             String concatFlights = event.getOperation().getFlights().toString().replaceAll("\\[","").replaceAll("\\]","").replaceAll(" ","");
@@ -230,7 +230,7 @@ public class Reservation {
         col.addAll(NE);
 
         this.Log = new ArrayList<>(col);
-        System.out.println("After update"+ this.getLog().size() + " " + this.Log.size());
+//        System.out.println("After update"+ this.getLog().size() + " " + this.Log.size());
 
 //        List<Event> partialLog = new ArrayList<>();
 //        boolean marker = true;
