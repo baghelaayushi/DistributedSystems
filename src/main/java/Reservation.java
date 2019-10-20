@@ -80,7 +80,7 @@ public class Reservation {
 
         // adding local insert event
         this.Log.add(new Event("insert",status.get(clientName),processId,clock));
-//        saveState();
+        saveState();
         return "Reservation submitted for "+clientName+".";
 
     }
@@ -111,7 +111,7 @@ public class Reservation {
         }else{
             return "Cannot schedule reservation for "+ clientName;
         }
-//        saveState();
+        saveState();
 
         return "Reservation for "+ clientName + " cancelled.";
     }

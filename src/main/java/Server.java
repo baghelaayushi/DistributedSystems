@@ -97,6 +97,10 @@ public class Server {
     }
     public void sendSmallAll(Reservation ob){
         for(Map.Entry<String,Site> client :siteHashMap.entrySet()){
+
+            if(client.getValue().getSiteNumber() == mySite.getSiteNumber())
+                continue;
+
             try {
                 String destinationAddress = client.getValue().getIpAddress();
                 int port = client.getValue().getRandomPort();
