@@ -213,6 +213,7 @@ import java.util.*;
         col.addAll(NE);
 
         this.Log = new ArrayList<>(col);
+        System.out.println(this.Log);
         List<Event> partialLog = new ArrayList<>();
         boolean marker = true;
         for(Event e:this.Log){
@@ -227,6 +228,8 @@ import java.util.*;
                 partialLog.add(e);
         }
         this.Log = partialLog;
+        System.out.println("partial log is:");
+        System.out.println(partialLog);
     }
     public void update(Message message,int receivedSiteID){
             List<Event> NE = new ArrayList<>();
