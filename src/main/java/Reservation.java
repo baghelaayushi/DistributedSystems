@@ -1,8 +1,6 @@
 
 import com.google.gson.*;
-import helpers.ClientInfo;
-import helpers.Event;
-import helpers.Message;
+import helpers.*;
 
 import java.io.*;
 
@@ -231,7 +229,8 @@ import java.util.*;
         System.out.println("partial log is:");
         System.out.println(partialLog);
     }
-    public void update(Message message,int receivedSiteID){
+    public void update(Message mess,int receivedSiteID){
+            normalMessage message = (normalMessage) mess;
             List<Event> NE = new ArrayList<>();
             List<Event> myLog = this.Log;
             List<Event> receivedLog = message.getMessageDetails();

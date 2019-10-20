@@ -32,6 +32,7 @@ public class MessagingClient {
     public void send(Message message) throws IOException {
         try {
 
+
                 byte[] incomingData = new byte[1024];
 
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

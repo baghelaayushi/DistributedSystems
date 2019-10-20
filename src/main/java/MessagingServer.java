@@ -45,8 +45,12 @@ public class MessagingServer {
 
                 //uncomment below and add site id
                 System.out.println("Student object received = "+ message.getMessageDetails());
-
-                updateRecords(message);
+                if(message.getMarker()) {
+                    updateRecords(message);
+                }
+                else {
+                    System.out.println("small message sent");
+                }
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

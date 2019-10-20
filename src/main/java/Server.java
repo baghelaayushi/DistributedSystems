@@ -2,9 +2,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import helpers.Event;
-import helpers.Message;
-import helpers.Site;
+import helpers.*;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -23,7 +21,7 @@ public class Server {
     private static List<Event> log = new ArrayList<>();
     private static int[][] matrixClock;
 
-    Reservation ob = new Reservation(matrixClock, log, mySite.getSiteNumber());
+    private Reservation ob = new Reservation(matrixClock, log, mySite.getSiteNumber());
 
     public static void bootstrapProject(String selfIdentifier) throws FileNotFoundException {
 
@@ -48,7 +46,7 @@ public class Server {
                 if(!ob.hasRec(e,site_number))
                     NP.add(e);
             }
-            new MessagingClient(destinationAddress, port).send(new Message(NP, matrixClock, mySite.getSiteNumber()));
+            new MessagingClient(destinationAddress, port).send(new normalMessage(NP, matrixClock, mySite.getSiteNumber()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,13 +62,50 @@ public class Server {
                     if (!ob.hasRec(e, site_number))
                         NP.add(e);
                 }
-                new MessagingClient(destinationAddress, port).send(new Message(NP, matrixClock, mySite.getSiteNumber()));
+                new MessagingClient(destinationAddress, port).send(new normalMessage(NP, matrixClock, mySite.getSiteNumber()));
             }
             catch (IOException e){
                 e.printStackTrace();
             }
         }
     }
+    public static void sendSmallMessage(String userInput,Reservation ob){
+        try {
+            String input[] = userInput.split(" ");
+            String clientName = input[1];
+            String destinationAddress = siteHashMap.get(clientName).getIpAddress();
+            int port = siteHashMap.get(clientName).getRandomPort();
+            int site_number = siteHashMap.get(clientName).getSiteNumber();
+//            System.out.println(destinationAddress +" " + port);
+            List<Event> NP = new ArrayList<>();
+            for(Event e: log){
+                if(!ob.hasRec(e,site_number))
+                    NP.add(e);
+            }
+            new MessagingClient(destinationAddress, port).send(new smallMessage(NP, matrixClock[mySite.getSiteNumber()], mySite.getSiteNumber()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void sendSmallAll(Reservation ob){
+        for(Map.Entry<String,Site> client :siteHashMap.entrySet()){
+            try {
+                String destinationAddress = client.getValue().getIpAddress();
+                int port = client.getValue().getRandomPort();
+                int site_number = client.getValue().getSiteNumber();
+                List<Event> NP = new ArrayList<>();
+                for (Event e : log) {
+                    if (!ob.hasRec(e, site_number))
+                        NP.add(e);
+                }
+                new MessagingClient(destinationAddress, port).send(new smallMessage(NP, matrixClock[mySite.getSiteNumber()], mySite.getSiteNumber()));
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private static void initialize() throws Exception{
         // initializing matrix and log for a site
@@ -177,6 +212,12 @@ public class Server {
                     break;
                 case "sendall":
                     sendAll(ob);
+                    break;
+                case "smallsend":
+                    sendSmallMessage(userInput,ob);
+                    break;
+                case "smallsendall":
+                    sendSmallAll(ob);
                     break;
                 default:
 //                  System.out.println("Enter a valid option");
