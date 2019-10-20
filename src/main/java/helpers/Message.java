@@ -1,18 +1,26 @@
 package helpers;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Message implements Serializable {
-    private static List<Event> log = new ArrayList<>();
-    private static int[][] matrixClock;
+    int siteId;
+    List<Event> log ;
+    boolean marker;
 
-    public Message(List<Event> log, int[][] matrixClock){
-        this.log = log;
-        this.matrixClock = matrixClock;
+    public List<Event> getMessageDetails(){
+        return log;
+    }
+    public int getSiteId() {
+        return siteId;
+    }
+    public boolean getMarker(){
+        return marker;
     }
 
-    public int getMessageDetails(){
-        return this.log.size();
-    }
 }
