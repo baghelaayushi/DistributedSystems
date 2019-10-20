@@ -353,20 +353,20 @@ public class Reservation {
         this.Log = new ArrayList<>(col);
 //        System.out.println("After update"+ this.getLog().size() + " " + this.Log.size());
 
-//        List<Event> partialLog = new ArrayList<>();
-//        boolean marker = true;
-//        for(Event e:this.Log){
-//            marker = true;
-//            for(int j=0;j<totalSites;j++){
-//                if(!hasRec(e,j)) {
-//                    marker = false;
-//                    break;
-//                }
-//            }
-//            if(!marker)
-//                partialLog.add(e);
-//        }
-//        this.Log = partialLog;
+        List<Event> partialLog = new ArrayList<>();
+        boolean marker = true;
+        for(Event e:this.Log){
+            marker = true;
+            for(int j=0;j<totalSites;j++){
+                if(!hasRec(e,j)) {
+                    marker = false;
+                    break;
+                }
+            }
+            if(!marker)
+                partialLog.add(e);
+        }
+        this.Log = partialLog;
 //        System.out.println("partial log is:");
 //        System.out.println(partialLog);
     }
