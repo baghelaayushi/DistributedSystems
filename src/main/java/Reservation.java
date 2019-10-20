@@ -81,7 +81,7 @@ public class Reservation {
         this.Log.add(new Event("insert",status.get(clientName),processId,clock));
 
         new Thread(this::saveState).start();
-        
+
         return "Reservation submitted for "+clientName+".";
 
     }
@@ -117,6 +117,7 @@ public class Reservation {
 
         return "Reservation for "+ clientName + " cancelled.";
     }
+
     public void saveState(){
         try(FileWriter fw = new FileWriter("persistent_log.json")){
             Gson gson = new Gson();
@@ -131,9 +132,61 @@ public class Reservation {
         catch (IOException e) {
             e.printStackTrace();
         }
+        try(FileWriter fw = new FileWriter("persistent_dictionary.json")){
+            Gson gson = new Gson();
+            JsonArray arr = new JsonArray();
+            for(Map.Entry<String,ClientInfo> entry: status.entrySet()){
+                JsonObject temp = new JsonObject();
+                JsonArray tempArray = new JsonArray();
+                String ob = gson.toJson(entry.getValue());
+                tempArray.add(ob);
+                temp.add(entry.getKey(),tempArray);
+                arr.add(temp);
+            }
+            fw.append(gson.toJson(arr));
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        try(FileWriter fw = new FileWriter("persistent_flights.json")){
+            Gson gson = new Gson();
+            JsonObject ob = new JsonObject();
+            for(Map.Entry<Integer,Integer> entry: flights.entrySet()){
+                String val = entry.getValue().toString();
+                JsonArray array = new JsonArray();
+                array.add(val);
+                ob.add(entry.getKey().toString(),array);
+            }
+            JsonArray arr = new JsonArray();
+            arr.add(ob);
+            fw.append(gson.toJson(arr));
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        try(FileWriter fw = new FileWriter("persistent_matrix.json")){
+            Gson gson = new Gson();
+            JsonArray arr = new JsonArray();
+            for(int i[]:Matrix){
+                JsonArray array = new JsonArray();
+                for(int j:i){
+                    String s = Integer.toString(j);
+                    array.add(s);
+                }
+                arr.add(array);
+            }
+            fw.append(gson.toJson(arr));
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void getState(){
+
+    public  void getState(){
         System.out.println("updating the log....");
         try {
             //convert the json string back to object
@@ -147,6 +200,72 @@ public class Reservation {
                 Event event = gson.fromJson(ob.getAsString(),Event.class);
                 // adding the events to log
                 Log.add(event);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            //convert the json string back to object
+            BufferedReader backup = new BufferedReader(new FileReader("persistent_dictionary.json"));
+            JsonParser parser = new JsonParser();
+            JsonArray parsed = parser.parse(backup).getAsJsonArray();
+            Gson gson = new Gson();
+            status = new HashMap<>();
+            for(JsonElement ob: parsed){
+                JsonObject temp = ob.getAsJsonObject();
+                Set<String> client = temp.keySet();
+                String s = "";
+                for(String client_id:client)
+                    s = client_id;
+
+                JsonArray array = temp.getAsJsonArray(s);
+                JsonElement obj = array.get(0);
+                ClientInfo cl = gson.fromJson(obj.getAsString(),ClientInfo.class);
+                status.put(s,cl);
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            //convert the json string back to object
+            BufferedReader backup = new BufferedReader(new FileReader("persistent_flights.json"));
+            JsonParser parser = new JsonParser();
+            JsonArray parsed = parser.parse(backup).getAsJsonArray();
+            flights = new HashMap<>();
+
+            Gson gson = new Gson();
+            JsonObject obj = parsed.get(0).getAsJsonObject();
+            Set<String> st = obj.keySet();
+            for(String s:st){
+                int flight_id = Integer.parseInt(s);
+                JsonArray arr = obj.getAsJsonArray(s);
+                int seats = Integer.parseInt(arr.get(0).getAsString());
+                flights.put(flight_id,seats);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            //convert the json string back to object
+            BufferedReader backup = new BufferedReader(new FileReader("persistent_matrix.json"));
+            JsonParser parser = new JsonParser();
+            JsonArray parsed = parser.parse(backup).getAsJsonArray();
+            Matrix = new int[Server.getTotalSites()][Server.getTotalSites()];
+            Gson gson = new Gson();
+            int i =0,j=0;
+            for(JsonElement ob:parsed){
+                JsonArray ar = ob.getAsJsonArray();
+                j=0;
+                for(JsonElement y:ar){
+                    String s = y.getAsString();
+                    Matrix[i][j] = Integer.parseInt(s);
+                    j++;
+                }
+                i++;
             }
 
         } catch (IOException e) {
