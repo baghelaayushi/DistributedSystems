@@ -10,5 +10,11 @@ public class smallMessage extends Message{
         this.matrixRow = matrixRowD;
         marker = false;
     }
+    public int[] getRow(){
+        return matrixRow;
+    }
+    public int getSiteId() {
+        return siteId;
+    }
 }
 

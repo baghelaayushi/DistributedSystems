@@ -27,8 +27,13 @@ public class MessagingServer {
         System.out.println("here");
         Reservation ob = Server.getReservation();
         System.out.println("site id is:"+ message.getSiteId());
-        ob.update(message,message.getSiteId());
+        if(message.getMarker()) {
+            ob.update(message, message.getSiteId());
+        }
+        else
+            ob.updateSmall(message);
     }
+
 
     public void listen() throws Exception {
         byte incomingData[] = new byte[1024];
@@ -45,12 +50,8 @@ public class MessagingServer {
 
                 //uncomment below and add site id
                 System.out.println("Student object received = "+ message.getMessageDetails());
-                if(message.getMarker()) {
                     updateRecords(message);
-                }
-                else {
-                    System.out.println("small message sent");
-                }
+
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

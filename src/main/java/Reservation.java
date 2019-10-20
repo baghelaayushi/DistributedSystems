@@ -261,6 +261,30 @@ import java.util.*;
             logTruncation(NE,Server.getTotalSites());
 
     }
+        public void updateSmall(Message mess){
+            smallMessage message = (smallMessage) mess;
+            List<Event> NE = new ArrayList<>();
+            List<Event> myLog = this.Log;
+            List<Event> receivedLog = message.getMessageDetails();
+            int receivedClock[] = message.getRow();
+            for(Event e:receivedLog){
+                if(!hasRec(e,processId)){
+                    NE.add(e);
+                }
+            }
+            updateDictionary(NE);
+
+            for(int i=0;i<Server.getTotalSites();i++){
+                Matrix[processId][i] = Integer.max(Matrix[processId][i],receivedClock[i]);
+            }
+            for(int i=0;i<Server.getTotalSites();i++){
+                Matrix[message.getSiteId()][i] = Integer.max(Matrix[message.getSiteId()][i],receivedClock[i]);
+            }
+
+            System.out.println("truncating the log:");
+            logTruncation(NE,Server.getTotalSites());
+
+        }
 
 
 }
