@@ -118,6 +118,8 @@ public class Server {
 
     private static void initialize() throws Exception{
 
+        getReservation().getState();
+
         MessagingServer server = new MessagingServer(mySite.getRandomPort());
 
         new Thread(() -> {
@@ -205,7 +207,7 @@ public class Server {
                 case "smallsendall":
                     sendSmallAll(getReservation());
                     break;
-                case "exit":
+                case "stop":
                     System.exit(0);
                 default:
             }

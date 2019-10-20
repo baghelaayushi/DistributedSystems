@@ -119,53 +119,13 @@ public class Reservation {
     }
 
     public void saveState(){
-        try(FileWriter fw = new FileWriter("persistent_log.json")){
-            Gson gson = new Gson();
-            JsonArray arr = new JsonArray();
-            for(Event e: Log){
-                String client_ob = gson.toJson(e);
-                arr.add(client_ob);
-            }
-            fw.append(gson.toJson(arr));
+        saveLog();
+        saveDictionary();
+        saveFlights();
+        saveMatrix();
+    }
 
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        try(FileWriter fw = new FileWriter("persistent_dictionary.json")){
-            Gson gson = new Gson();
-            JsonArray arr = new JsonArray();
-            for(Map.Entry<String,ClientInfo> entry: status.entrySet()){
-                JsonObject temp = new JsonObject();
-                JsonArray tempArray = new JsonArray();
-                String ob = gson.toJson(entry.getValue());
-                tempArray.add(ob);
-                temp.add(entry.getKey(),tempArray);
-                arr.add(temp);
-            }
-            fw.append(gson.toJson(arr));
-
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        try(FileWriter fw = new FileWriter("persistent_flights.json")){
-            Gson gson = new Gson();
-            JsonObject ob = new JsonObject();
-            for(Map.Entry<Integer,Integer> entry: flights.entrySet()){
-                String val = entry.getValue().toString();
-                JsonArray array = new JsonArray();
-                array.add(val);
-                ob.add(entry.getKey().toString(),array);
-            }
-            JsonArray arr = new JsonArray();
-            arr.add(ob);
-            fw.append(gson.toJson(arr));
-
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void saveMatrix() {
         try(FileWriter fw = new FileWriter("persistent_matrix.json")){
             Gson gson = new Gson();
             JsonArray arr = new JsonArray();
@@ -185,8 +145,64 @@ public class Reservation {
         }
     }
 
+    private void saveFlights() {
+        try(FileWriter fw = new FileWriter("persistent_flights.json")){
+            Gson gson = new Gson();
+            JsonObject ob = new JsonObject();
+            for(Map.Entry<Integer,Integer> entry: flights.entrySet()){
+                String val = entry.getValue().toString();
+                JsonArray array = new JsonArray();
+                array.add(val);
+                ob.add(entry.getKey().toString(),array);
+            }
+            JsonArray arr = new JsonArray();
+            arr.add(ob);
+            fw.append(gson.toJson(arr));
 
-    public  void getState(){
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveDictionary() {
+        try(FileWriter fw = new FileWriter("persistent_dictionary.json")){
+            Gson gson = new Gson();
+            JsonArray arr = new JsonArray();
+            for(Map.Entry<String, ClientInfo> entry: status.entrySet()){
+                JsonObject temp = new JsonObject();
+                JsonArray tempArray = new JsonArray();
+                String ob = gson.toJson(entry.getValue());
+                tempArray.add(ob);
+                temp.add(entry.getKey(),tempArray);
+                arr.add(temp);
+            }
+            fw.append(gson.toJson(arr));
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveLog() {
+        try(FileWriter fw = new FileWriter("persistent_log.json")){
+            Gson gson = new Gson();
+            JsonArray arr = new JsonArray();
+            for(Event e: Log){
+                String client_ob = gson.toJson(e);
+                arr.add(client_ob);
+            }
+            fw.append(gson.toJson(arr));
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void getState(){
         System.out.println("updating the log....");
         try {
             //convert the json string back to object
@@ -203,7 +219,7 @@ public class Reservation {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         try {
             //convert the json string back to object
@@ -227,7 +243,7 @@ public class Reservation {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         try {
             //convert the json string back to object
@@ -247,7 +263,7 @@ public class Reservation {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         try {
             //convert the json string back to object
@@ -269,7 +285,7 @@ public class Reservation {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
     }
@@ -402,6 +418,7 @@ public class Reservation {
         }
 //        System.out.println("truncating the log:");
         logTruncation(NE,Server.getTotalSites());
+        saveState();
 
     }
     public void updateSmall(Message mess){
