@@ -165,7 +165,7 @@ public class Reservation {
     }
 
     public void viewLog(){
-
+        System.out.println("VIEWING LOG");
         for (Event event : this.getLog()){
 //            System.out.println(event.getOperationType()+ " " + event.getOperation().getClientName() + " " + event.getOperation().getFlights());
             String row;
@@ -231,9 +231,7 @@ public class Reservation {
         Collection<Event> col = new ArrayList<Event>(this.Log);
 
         col.addAll(NE);
-        for (Event each : NE){
-            System.out.println(each.getOperation().getClientName() + " " + each.getOperation().getFlights());
-        }
+
         this.Log = new ArrayList<>(col);
 
 //        List<Event> partialLog = new ArrayList<>();
