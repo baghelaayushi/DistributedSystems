@@ -208,6 +208,26 @@ import java.util.*;
                 status.put(e.getOperation().getClientName(),e.getOperation());
         }
     }
+    public void logTruncation(List<Event> NE, int totalSites){
+        Collection<Event> col = new ArrayList<Event>(this.Log);
+        col.addAll(NE);
+
+        this.Log = new ArrayList<>(col);
+        List<Event> partialLog = new ArrayList<>();
+        boolean marker = true;
+        for(Event e:this.Log){
+            marker = true;
+            for(int j=0;j<totalSites;j++){
+                if(!hasRec(e,j)) {
+                    marker = false;
+                    break;
+                }
+            }
+            if(!marker)
+                partialLog.add(e);
+        }
+        this.Log = partialLog;
+    }
     public void update(Message message,int receivedSiteID){
             List<Event> NE = new ArrayList<>();
             List<Event> myLog = this.Log;
@@ -235,6 +255,9 @@ import java.util.*;
                     Matrix[i][j] = Integer.max(Matrix[i][j],receivedClock[i][j]);
                 }
             }
+            System.out.println("truncating the log:");
+            logTruncation(NE,Server.getTotalSites());
+
     }
 
 
