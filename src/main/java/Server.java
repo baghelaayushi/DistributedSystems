@@ -53,6 +53,24 @@ public class Server {
             e.printStackTrace();
         }
     }
+    public static void sendAll(Reservation ob){
+        for(Map.Entry<String,Site> client :siteHashMap.entrySet()){
+            try {
+                String destinationAddress = client.getValue().getIpAddress();
+                int port = client.getValue().getRandomPort();
+                int site_number = client.getValue().getSiteNumber();
+                List<Event> NP = new ArrayList<>();
+                for (Event e : log) {
+                    if (!ob.hasRec(e, site_number))
+                        NP.add(e);
+                }
+                new MessagingClient(destinationAddress, port).send(new Message(NP, matrixClock, mySite.getSiteNumber()));
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
 
     private static void initialize() throws Exception{
         // initializing matrix and log for a site
@@ -157,9 +175,11 @@ public class Server {
                 case "send":
                     sendMessage(userInput,ob);
                     break;
-
+                case "sendall":
+                    sendAll(ob);
+                    break;
                 default:
-//                    System.out.println("Enter a valid option");
+//                  System.out.println("Enter a valid option");
             }
 
         }
