@@ -77,10 +77,22 @@ public class Reservation {
         clock++;
 
         status.put(clientName, new ClientInfo(clientName, flightNumbers, "pending"));
-
         // adding local insert event
         this.Log.add(new Event("insert",status.get(clientName),processId,clock));
-        saveState();
+
+        Runnable R =  new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    saveState();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        new Thread(R).start();
+
         return "Reservation submitted for "+clientName+".";
 
     }
