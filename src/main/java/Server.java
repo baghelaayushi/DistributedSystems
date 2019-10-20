@@ -120,19 +120,13 @@ public class Server {
 
         MessagingServer server = new MessagingServer(mySite.getRandomPort());
 
-        Runnable R =  new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    server.listen();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                server.listen();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        };
-
-        Thread t = new Thread(R);
-        t.start();
+        }).start();
     }
 
     private static void processHosts(String self) throws FileNotFoundException {

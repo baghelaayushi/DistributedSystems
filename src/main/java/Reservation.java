@@ -80,19 +80,8 @@ public class Reservation {
         // adding local insert event
         this.Log.add(new Event("insert",status.get(clientName),processId,clock));
 
-        Runnable R =  new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    saveState();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        new Thread(R).start();
-
+        new Thread(this::saveState).start();
+        
         return "Reservation submitted for "+clientName+".";
 
     }
@@ -123,7 +112,8 @@ public class Reservation {
         }else{
             return "Cannot schedule reservation for "+ clientName;
         }
-        saveState();
+
+        new Thread(this::saveState).start();
 
         return "Reservation for "+ clientName + " cancelled.";
     }
