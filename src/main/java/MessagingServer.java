@@ -49,7 +49,7 @@ public class MessagingServer {
                 Message message = (Message) is.readObject();
 
                 //uncomment below and add site id
-                System.out.println("Student object received = "+ message.getMessageDetails());
+//                 System.out.println("Student object received = "+ message.getMessageDetails());
                     updateRecords(message);
 
 
