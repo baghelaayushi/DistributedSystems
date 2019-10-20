@@ -44,6 +44,7 @@ public class Server {
                     NP.add(e);
             }
             client.send(new normalMessage(NP, ob.getMatrix(), mySite.getSiteNumber()));
+
             client.close();
         } catch (IOException e) {
             e.printStackTrace();

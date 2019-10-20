@@ -203,7 +203,7 @@ public class Reservation {
 
 
     public void getState(){
-        System.out.println("updating the log....");
+//        System.out.println("updating the log....");
         try {
             //convert the json string back to object
             BufferedReader backup = new BufferedReader(new FileReader("persistent_log.json"));
