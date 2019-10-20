@@ -165,13 +165,10 @@ public class Reservation {
     }
 
     public void viewLog(){
-        System.out.println("VIEWING LOG");
+        System.out.println("VIEWING LOG" + this.getLog().size());
         for (Event event : this.getLog()){
-//            System.out.println(event.getOperationType()+ " " + event.getOperation().getClientName() + " " + event.getOperation().getFlights());
             String row;
-//            System.out.println(event.getOperation().getFlights().toString());
             String concatFlights = event.getOperation().getFlights().toString().replaceAll("\\[","").replaceAll("\\]","").replaceAll(" ","");
-//            System.out.println(concatFlights);
             if(event.getOperationType().equals("insert")){
                 row = event.getOperationType() + " " +
                         event.getOperation().getClientName()  + " " +
@@ -233,6 +230,7 @@ public class Reservation {
         col.addAll(NE);
 
         this.Log = new ArrayList<>(col);
+        System.out.println("After update"+ this.getLog().size() + " " + this.Log.size());
 
 //        List<Event> partialLog = new ArrayList<>();
 //        boolean marker = true;
