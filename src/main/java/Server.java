@@ -17,12 +17,9 @@ public class Server {
     private static int number_of_hosts = -1;
     private static HashMap<String, Site> siteHashMap = new HashMap<>();
     private static Site mySite = null;
-
-//    private static int[][] matrixClock;
-
     private static Reservation ob;
 
-    public static void bootstrapProject(String selfIdentifier) throws FileNotFoundException {
+    public static void bootstrapProject(String selfIdentifier){
 
         try {
             processHosts(selfIdentifier);
@@ -47,6 +44,7 @@ public class Server {
                     NP.add(e);
             }
             client.send(new normalMessage(NP, ob.getMatrix(), mySite.getSiteNumber()));
+
             client.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,7 +75,7 @@ public class Server {
             }
         }
     }
-    public void sendSmallMessage(String userInput,Reservation ob){
+    public static void sendSmallMessage(String userInput,Reservation ob){
         try {
             String input[] = userInput.split(" ");
             String clientName = input[1];
@@ -95,8 +93,12 @@ public class Server {
             e.printStackTrace();
         }
     }
-    public void sendSmallAll(Reservation ob){
+    public static void sendSmallAll(Reservation ob){
         for(Map.Entry<String,Site> client :siteHashMap.entrySet()){
+
+            if(client.getValue().getSiteNumber() == mySite.getSiteNumber())
+                continue;
+
             try {
                 String destinationAddress = client.getValue().getIpAddress();
                 int port = client.getValue().getRandomPort();
@@ -116,21 +118,18 @@ public class Server {
 
 
     private static void initialize() throws Exception{
-        // initializing matrix and log for a site
+
+        getReservation().getState();
+
         MessagingServer server = new MessagingServer(mySite.getRandomPort());
 
-        Runnable R =  new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    server.listen();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                server.listen();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        };
-        Thread t = new Thread(R);
-        t.start();
+        }).start();
     }
 
     private static void processHosts(String self) throws FileNotFoundException {
@@ -148,9 +147,9 @@ public class Server {
             Site site = new Site(siteInfo.get("ip_address").getAsString(),
                     siteInfo.get("udp_start_port").getAsString(),
                     siteInfo.get("udp_end_port").getAsString(),site_number++);
+
             siteHashMap.put(host.getKey(), site);
 
-            //TODO : Update this with environment variables
             if(host.getKey().equalsIgnoreCase(self)){
                 mySite = site;
             }
@@ -162,30 +161,14 @@ public class Server {
 
     public static void main( String[] args) {
 
-
-        boolean devMode = false;
-        String self = args.length == 0 ? "alpha" : args[0];
-        if(args.length < 0 && !devMode){
-            System.out.println("Select the current site");
-            System.exit(0);
-        }
-
-        try {
-            bootstrapProject(self);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-
+        bootstrapProject(args.length == 0 ? "apple" : args[0]);
         acceptUserInput();
-
     }
 
     private static void acceptUserInput() {
-        Server server = new Server();
+
         Scanner in = new Scanner(System.in);
         String userInput;
-//        System.out.println("Enter an option");
         while (!(userInput = in.nextLine()).equals("exit")){
 
             String input[] = userInput.split(" ");
@@ -220,13 +203,14 @@ public class Server {
                     sendAll(getReservation());
                     break;
                 case "smallsend":
-                    server.sendSmallMessage(userInput,getReservation());
+                    sendSmallMessage(userInput,getReservation());
                     break;
                 case "smallsendall":
-                    server.sendSmallAll(getReservation());
+                    sendSmallAll(getReservation());
                     break;
+                case "stop":
+                    System.exit(0);
                 default:
-//                  System.out.println("Enter a valid option");
             }
 
         }

@@ -51,7 +51,7 @@ public class MessagingServer {
                 e.printStackTrace();
             }
 
-            System.out.println("HERE");
+//            System.out.println("HERE");
 
         }
     }
