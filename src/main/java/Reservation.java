@@ -88,11 +88,13 @@ public class Reservation {
 
     public String cancel(String command){
 
+        System.out.println(command);
         String input[] = command.split(" ");
         String clientName = input[1];
 
         if(status.containsKey(clientName)){
 
+            System.out.println("deleteing");
             //adding event to matrix clock
             this.Matrix[processId][processId]++;
             List<Integer> flightsToCancel = status.get(clientName).getFlights();
@@ -203,7 +205,6 @@ public class Reservation {
 
 
     public void getState(){
-//        System.out.println("updating the log....");
         try {
             //convert the json string back to object
             BufferedReader backup = new BufferedReader(new FileReader("persistent_log.json"));
@@ -383,9 +384,8 @@ public class Reservation {
                 partialLog.add(e);
         }
         this.Log = partialLog;
-//        System.out.println("partial log is:");
-//        System.out.println(partialLog);
     }
+
     public void update(Message mess,int receivedSiteID){
 
         normalMessage message = (normalMessage) mess;
@@ -395,28 +395,97 @@ public class Reservation {
         int receivedClock[][] = message.getMatrixClock();
         for(Event e:receivedLog){
             if(!hasRec(e,processId)){
-//                System.out.println(e.getOperation().getFlights());
                 NE.add(e);
             }
         }
-        updateDictionary(NE);
-//        System.out.println(NE);
-//        for(int i[]:receivedClock){
-//            for (int j: i)
-//                System.out.print(j);
-//            System.out.println();
+
+//
+//        //Conflict Resolution
+//        //1. Check if there is a conflict
+//        boolean conflictExists = false;
+//        List<Event> purgeEvents = new ArrayList<>();
+//        List<Integer> myFlights = new ArrayList<>();
+//        for (Event each : NE){
+//            if(each.getOperationType().equals("insert")){
+//                for (int i = 0; i < each.getOperation().getFlights().size(); i++){
+//
+//                    if(flights.get(each.getOperation().getFlights().get(i)) == 0){
+//                        System.out.println("WE HAVE A CONFLICT");
+//                        myFlights = each.getOperation().getFlights();
+//                        conflictExists = true;
+//                        break;
+//                    }
+//                }
+//                if(conflictExists){
+//                    //resolve the conflict
+//                    boolean foundConflictingClient = false;
+//                    ClientInfo conflictingClient = null;
+//                    int eventTimestamp = each.getTime();
+//
+//                    //who has booked the flight?
+//                    for (ClientInfo clients : this.status.values()){
+//                        ArrayList<Integer> remove = new ArrayList<Integer>(myFlights);
+//                        remove.removeAll(clients.getFlights());
+//                        if(remove.size() < myFlights.size() && !clients.getClientName().equals(each.getOperation().getClientName())){
+//                            System.out.println("WE HAVE FOUND THE conflict with" + clients.getClientName());
+//                            //Now let's resolve the conflict
+//                            foundConflictingClient = true;
+//                            conflictingClient = clients;
+//                            break;
+//                        }
+//                    }
+//
+//                    if(foundConflictingClient){
+//                        Iterator<Event> s = this.getLog().iterator();
+//                        if (s.hasNext()){
+//                            Event currentLog = s.next();
+//                            if(currentLog.getOperation().getClientName() == conflictingClient.getClientName()
+//                                    && currentLog.getOperationType().equalsIgnoreCase("insert")){
+//                                System.out.println("CURRENT TIMESTAMP IS" + currentLog.getTime());
+//                                if(currentLog.getTime() < eventTimestamp){
+//                                    purgeEvents.add(each);
+//                                }else if(currentLog.getTime() > eventTimestamp){
+//                                    //cancel my event
+//                                    cancel("Delete" + " " + currentLog.getOperation().getClientName());
+//                                }else{
+//                                    System.out.println("COMPARE LEXICO"+ currentLog.getOperation().getClientName() + " "+ conflictingClient.getClientName());
+//                                    int tieBreaker = currentLog.getOperation().getClientName().compareTo(conflictingClient.getClientName());
+//                                    System.out.println("TIE BREAKER AT" + tieBreaker);
+//                                    if(tieBreaker < 0){
+//                                        System.out.println(conflictingClient.getClientName() +" has won");
+//                                        //conflictingWins
+//                                        cancel("Delete" + " " + currentLog.getOperation().getClientName());
+//                                    }else{
+//                                        //currentWins
+//                                        purgeEvents.add(each);
+//
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                }
+//
+//            }
 //        }
+
+        updateDictionary(NE);
+
+
+        //
+
+
         for(int i=0;i<Server.getTotalSites();i++){
             Matrix[processId][i] = Integer.max(Matrix[processId][i],receivedClock[receivedSiteID][i]);
         }
-//        System.out.println("Total sites are");
-//        System.out.println(Server.getTotalSites());
+
         for(int i=0;i<Server.getTotalSites();i++){
             for(int j=0;j<Server.getTotalSites();j++){
                 Matrix[i][j] = Integer.max(Matrix[i][j],receivedClock[i][j]);
             }
         }
-//        System.out.println("truncating the log:");
+
         logTruncation(NE,Server.getTotalSites());
         saveState();
 

@@ -46,7 +46,6 @@ public class MessagingServer {
                 Message message = (Message) is.readObject();
                 updateRecords(message);
 
-
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
